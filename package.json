@@ -1,0 +1,15 @@
+{
+  "name": "naomika-design-studio",
+  "version": "1.0.0",
+  "description": "Naomika Design Studio - Luxury Designer Boutique & Haute Couture (Trivandrum & Cochin, Kerala)",
+  "main": "admin_server.js",
+  "scripts": {
+    "start": "node admin_server.js",
+    "sync": "node sync_store.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Naomika Design Studio | Official Digital Receipt & Voucher</title>
+  <link rel="icon" type="image/png" href="images/logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; padding: 0 !important; }
+      .print-card { border: none !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-stone-50 min-h-screen py-10 px-4 flex justify-center items-start font-sans">
+
+  <div class="print-card bg-white max-w-2xl w-full border border-amber-900/20 shadow-xl overflow-hidden p-8 sm:p-10">
+    
+    <!-- Top Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-stone-200 pb-6 mb-6 gap-4">
+      <div class="flex items-center gap-4">
+        <img src="images/logo.png" alt="Naomika Logo" class="h-14 w-auto object-contain" onerror="this.src='images/1.jpeg'"/>
+        <div>
+          <h1 class="font-serif text-2xl font-normal text-stone-900 tracking-widest uppercase leading-none">Naomika</h1>
+          <p class="text-[10px] text-amber-800 tracking-[0.3em] font-medium uppercase mt-1">Design Studio</p>
+          <p class="text-[10px] text-stone-400 mt-0.5">Kowdiar & Kuravankonam, Trivandrum, Kerala</p>
+        </div>
+      </div>
+      <div class="text-left sm:text-right">
+        <span id="receipt-badge" class="inline-block px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 text-xs font-semibold uppercase tracking-wider mb-1">
+          Official Digital Receipt
+        </span>
+        <p id="receipt-id" class="text-xs font-mono text-stone-700 font-bold">#NDS-000000</p>
+        <p id="receipt-date" class="text-[11px] text-stone-400">Date: -</p>
+      </div>
+    </div>
+
+    <!-- Client Details -->
+    <div class="bg-stone-50 p-5 border border-stone-200 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+      <div>
+        <span class="text-stone-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Client Details</span>
+        <p id="receipt-name" class="font-bold text-stone-900 text-sm">-</p>
+        <p id="receipt-phone" class="text-stone-600 mt-0.5">-</p>
+      </div>
+      <div id="receipt-address-box">
+        <span class="text-stone-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Delivery / Fitting Destination</span>
+        <p id="receipt-address" class="text-stone-800 font-medium whitespace-pre-line leading-relaxed">-</p>
+      </div>
+    </div>
+
+    <!-- Customization Notice -->
+    <div id="receipt-custom-notice" class="hidden mb-6 p-4 bg-amber-50/60 border-l-2 border-amber-700 text-xs text-amber-950">
+      <div class="font-bold uppercase tracking-wider text-[10px] text-amber-900 mb-1">Requested Fitting Date & Time:</div>
+      <p id="receipt-appointment-text" class="font-semibold text-sm text-stone-900 mb-2"></p>
+      <p class="text-stone-600 italic">"We will have a look whether our team is available at the same time and let you know."</p>
+    </div>
+
+    <!-- Itemized Table -->
+    <div class="mb-6 overflow-x-auto">
+      <h3 class="font-semibold text-xs uppercase tracking-wider text-stone-500 mb-3">Item Breakdown</h3>
+      <table class="w-full text-left text-xs">
+        <thead>
+          <tr class="bg-stone-100 text-stone-700 uppercase font-semibold text-[10px] border-b border-stone-200">
+            <th class="p-2.5">Creation</th>
+            <th class="p-2.5">Code</th>
+            <th class="p-2.5 text-center">Fitting / Fabric</th>
+            <th class="p-2.5 text-center">Qty</th>
+            <th class="p-2.5 text-right">Price</th>
+          </tr>
+        </thead>
+        <tbody id="receipt-items-body" class="divide-y divide-stone-100">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Total -->
+    <div class="border-t border-stone-200 pt-4 mb-8 flex justify-between items-center">
+      <div>
+        <span class="text-xs text-stone-400 block uppercase tracking-wider text-[10px]">Concierge Verification</span>
+        <span class="text-xs font-semibold text-emerald-700 uppercase">Verified Atelier Record</span>
+      </div>
+      <div class="text-right">
+        <span class="text-xs text-stone-400 uppercase tracking-wider text-[10px] block">Grand Total</span>
+        <span id="receipt-total" class="font-serif text-2xl font-bold text-amber-900">₹0</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="no-print flex flex-col sm:flex-row gap-3 justify-between items-center pt-4 border-t border-stone-100">
+      <a href="index.html" class="text-xs font-semibold text-amber-900 hover:underline flex items-center gap-1">
+        &larr; Return to Studio
+      </a>
+      <div class="flex items-center gap-3">
+        <button onclick="window.print()" class="px-5 py-2.5 bg-stone-900 hover:bg-black text-white text-xs font-semibold uppercase tracking-wider transition-all">
+          Print Receipt
+        </button>
+        <a id="receipt-wa-btn" href="#" target="_blank" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider transition-all">
+          Confirm on WhatsApp
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawData = urlParams.get('data');
+
+      if (!rawData) {
+        document.getElementById('receipt-name').innerText = 'No receipt parameter found in URL.';
+        return;
+      }
+
+      try {
+        const order = JSON.parse(decodeURIComponent(rawData));
+        
+        document.getElementById('receipt-id').innerText = '#' + (order.orderId || 'NDS-000000');
+        document.getElementById('receipt-date').innerText = 'Date: ' + (order.date || new Date().toLocaleDateString('en-IN'));
+        document.getElementById('receipt-name').innerText = order.customerName || 'Valued Client';
+        document.getElementById('receipt-phone').innerText = 'Phone: ' + (order.customerPhone || 'N/A');
+
+        if (order.type && order.type.includes('Customization')) {
+          document.getElementById('receipt-badge').innerText = 'Bespoke Consultation Voucher';
+          document.getElementById('receipt-custom-notice').classList.remove('hidden');
+          document.getElementById('receipt-appointment-text').innerText = (order.appointmentDate || '') + ' (' + (order.appointmentSlot || 'Morning') + ')';
+          document.getElementById('receipt-address').innerText = order.notes || 'Bespoke atelier consultation';
+        } else {
+          document.getElementById('receipt-address').innerText = (order.customerAddress || 'N/A') + '\n' + (order.customerCity || '');
+        }
+
+        const tbody = document.getElementById('receipt-items-body');
+        tbody.innerHTML = '';
+
+        if (order.items && order.items.length > 0) {
+          order.items.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="p-2.5 font-medium text-stone-900 flex items-center gap-2">
+                <img src="${item.image || 'images/1.jpeg'}" class="w-8 h-10 rounded object-cover border border-stone-200"/>
+                <span>${item.name}</span>
+              </td>
+              <td class="p-2.5 font-mono text-stone-600">${item.code}</td>
+              <td class="p-2.5 text-center text-stone-700">${item.size || item.fabric || 'Standard'}</td>
+              <td class="p-2.5 text-center">${item.qty || 1}</td>
+              <td class="p-2.5 text-right font-semibold text-stone-900">${item.priceDisplay || '₹' + item.price}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        document.getElementById('receipt-total').innerText = order.totalDisplay || ('₹' + (order.total || 0).toLocaleString('en-IN'));
+
+        const waUrl = `https://wa.me/919447000000?text=${encodeURIComponent('Hello Naomika Design Studio, here is my receipt for confirmation: ' + window.location.href)}`;
+        document.getElementById('receipt-wa-btn').href = waUrl;
+
+      } catch (e) {
+        console.error('Failed to parse order receipt data:', e);
+      }
+    });
+  </script>
+</body>
+</html>

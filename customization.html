@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <title>Bespoke Customization & Made-To-Order | Naomika Design Studio | Trivandrum, Kerala</title>
+  <meta name="description" content="Experience bespoke bridal and couture dress customization with Naomika Design Studio in Trivandrum. Book custom bridal fittings, choose heirloom Kerala silks, and schedule personalized appointments."/>
+  <meta name="keywords" content="Bespoke tailoring Trivandrum, custom bridal lehenga Kerala, made to order dresses Trivandrum, designer tailoring Kerala, Naomika customization studio"/>
+  <meta name="geo.region" content="IN-KL"/>
+  <meta name="geo.placename" content="Trivandrum, Kerala"/>
+
+  <link rel="icon" type="image/png" href="images/logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="data/products.js"></script>
+</head>
+<body class="theme-noir-custom">
+
+  <!-- Noir Navigation Header -->
+  <header class="header-wrap">
+    <div class="header-inner">
+      <a href="index.html" class="brand-center-logo">
+        <img src="images/logo.png" alt="Naomika Logo" onerror="this.src='images/1.jpeg'"/>
+        <div class="brand-text-block">
+          <span class="brand-title-lg">Naomika</span>
+          <span class="brand-tag-sm" style="color: var(--gold-soft);">Design Studio</span>
+        </div>
+      </a>
+
+      <nav class="nav-editorial-links">
+        <a href="index.html">Home</a>
+        <a href="ladies-wear.html">Ladies Wear</a>
+        <a href="mens-wear.html">Mens Wear</a>
+        <a href="customization.html" class="active">Customization</a>
+      </nav>
+
+      <div class="header-right-tools">
+        <button onclick="openCustomModal('NDS-CU-BESPOKE')" class="btn-classy" style="background: var(--gold-antique); color: #fff; padding: 9px 20px; font-size: 0.72rem;">
+          Book Consultation
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section style="padding: 70px 32px 40px; text-align: center;">
+    <div style="max-width: 860px; margin: 0 auto;">
+      <span class="editorial-section-sub" style="color: var(--gold-soft); letter-spacing: 0.25em;">Bespoke Fashion Studio</span>
+      <h1 class="editorial-section-title" style="color: #ffffff; margin-bottom: 16px;">
+        Made-to-Order & Custom Couture
+      </h1>
+      <p style="font-size: 0.95rem; color: #a1a1aa; line-height: 1.8; max-width: 680px; margin: 0 auto;">
+        Every silhouette is individually drafted and customized to your exact measurements, color palette, and occasion by our master artisans in Trivandrum.
+      </p>
+    </div>
+  </section>
+
+  <!-- Made-to-Order Collection Grid -->
+  <main style="padding: 30px 32px 80px; max-width: 1400px; margin: 0 auto;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid rgba(184, 151, 88, 0.25); padding-bottom: 16px; margin-bottom: 40px;">
+      <div>
+        <h2 style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff;">Made to Order Creations</h2>
+        <p style="font-size: 0.82rem; color: #a1a1aa;">Choose any creation below to request custom fitting or bespoke modifications.</p>
+      </div>
+      <button onclick="openCustomModal('NDS-CU-BESPOKE')" class="btn-classy-outline" style="border-color: var(--gold-antique); color: var(--gold-soft); background: transparent; font-size: 0.72rem; padding: 8px 18px;">
+        + Custom Design Request
+      </button>
+    </div>
+
+    <!-- Target Grid for Made-to-Order Creations -->
+    <div id="made-to-order-grid" class="products-grid-editorial">
+      <!-- Populated dynamically -->
+    </div>
+
+  </main>
+
+  <!-- Consultation & Date Booking Modal -->
+  <div id="custom-booking-modal" class="modal-backdrop-editorial">
+    <div class="modal-box-editorial" style="background: #131317; color: #f4f4f5; border-color: rgba(184, 151, 88, 0.4);">
+      <button class="modal-close-editorial" style="color: #a1a1aa;" onclick="closeCustomModal()">&times;</button>
+      
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--gold-soft); text-transform: uppercase; font-weight: 600;">
+          Naomika Bespoke Fitting
+        </span>
+        <h3 id="custom-modal-title" style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff; margin-top: 4px;">Custom Couture Order</h3>
+        <p id="custom-modal-code" style="font-family: monospace; font-size: 0.75rem; color: #71717a;"></p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px; background: #0c0c0f; padding: 14px 18px; border: 1px solid rgba(184, 151, 88, 0.25); border-radius: 10px; margin-bottom: 24px;">
+        <img id="custom-modal-img" src="" style="width: 60px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-gold);" onerror="this.src='images/1.jpeg'"/>
+        <div style="flex: 1;">
+          <h4 id="custom-preview-name" style="font-family: var(--font-editorial); font-size: 1.2rem; color: #ffffff; font-weight: 500;"></h4>
+          <span style="font-size: 0.72rem; color: var(--gold-soft); letter-spacing: 0.1em; text-transform: uppercase;">Handcrafted In Trivandrum</span>
+        </div>
+        <div id="custom-modal-price" style="font-weight: 700; font-size: 1.1rem; color: var(--gold-soft); font-family: var(--font-editorial);"></div>
+      </div>
+
+      <form onsubmit="submitCustomForm(event)">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Client Full Name *</label>
+          <input type="text" id="custom-name" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" placeholder="e.g. Ananya Nair" required/>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">WhatsApp Contact Number *</label>
+          <input type="tel" id="custom-phone" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" placeholder="e.g. +91 94470 12345" required/>
+        </div>
+
+        <!-- Preferred Available Date & Slot -->
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 14px; margin-bottom: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Preferred Fitting Date *</label>
+            <input type="date" id="custom-date" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" required/>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Time Slot Preference</label>
+            <select id="custom-slot" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;">
+              <option value="Morning (10:30 AM - 1:00 PM)">Morning</option>
+              <option value="Afternoon (2:00 PM - 5:00 PM)" selected>Afternoon</option>
+              <option value="Evening (5:30 PM - 8:00 PM)">Evening</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Measurement Details / Neckline & Fabric Preference</label>
+          <textarea id="custom-notes" rows="2" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" placeholder="Mention your event date, silk color choice, or blouse pattern"></textarea>
+        </div>
+
+        <!-- Studio Availability Review Notice -->
+        <div style="background: rgba(184, 151, 88, 0.12); border-left: 2px solid var(--gold-soft); border-radius: 8px; padding: 14px 18px; margin-bottom: 24px;">
+          <div style="font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; color: var(--gold-soft); margin-bottom: 4px;">
+            📅 Studio Availability Notice
+          </div>
+          <p style="font-size: 0.82rem; color: #e4e4e7; font-style: italic; line-height: 1.5;">
+            "We will have a look whether our team is available at the same time and let you know."
+          </p>
+        </div>
+
+        <button type="submit" class="btn-classy" style="width: 100%; padding: 14px 0; background: var(--gold-antique); color: #fff;">
+          Schedule Consultation & Confirm via WhatsApp &rarr;
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-editorial" style="background: #08080a; border-top-color: rgba(184, 151, 88, 0.2);">
+    <div class="footer-editorial-inner">
+      <div>
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+          <img src="images/logo.png" alt="Naomika" style="height:44px;" onerror="this.src='images/1.jpeg'"/>
+          <span style="font-family:var(--font-editorial); font-size:1.6rem; font-weight:600; color:#fff; letter-spacing:0.18em;">NAOMIKA</span>
+        </div>
+        <p style="font-size:0.85rem; color:#888892; line-height:1.7;">Haute Couture Bespoke Boutique. Trivandrum, Kerala.</p>
+      </div>
+      <div>
+        <h4 class="footer-editorial-title">Explore</h4>
+        <ul class="footer-editorial-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="ladies-wear.html">Ladies Wear</a></li>
+          <li><a href="mens-wear.html">Mens Wear</a></li>
+          <li><a href="customization.html">Customization Studio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-editorial-title">Consultations</h4>
+        <p style="font-size:0.82rem; color:#888892; margin-bottom:8px;">Trivandrum, Kerala</p>
+        <p style="font-size:0.82rem; color:#888892;">Direct WhatsApp: +91 94470 00000</p>
+      </div>
+      <div>
+        <h4 class="footer-editorial-title">Bespoke Assurance</h4>
+        <p style="font-size:0.82rem; color:#888892; line-height:1.6;">Every consultation is issued an official studio digital voucher.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-nav-items">
+      <a href="index.html" class="mobile-nav-link">
+        <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="ladies-wear.html" class="mobile-nav-link">
+        <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span>Ladies</span>
+      </a>
+      <a href="mens-wear.html" class="mobile-nav-link">
+        <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        <span>Mens</span>
+      </a>
+      <a href="customization.html" class="mobile-nav-link active">
+        <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        <span>Custom</span>
+      </a>
+      <a href="https://wa.me/919447000000?text=Hello%20Naomika%20Design%20Studio!%20I%20would%20like%20to%20customize." target="_blank" class="mobile-nav-link mobile-nav-whatsapp">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.059-1.146-.086-.723-.233-1.636-.788-2.618-1.77-1.025-1.026-1.529-1.928-1.748-2.639-.136-.443-.112-.821-.061-1.127.056-.33.398-.999.803-1.139.141-.049.297-.042.427.021.13.064.444.698.535.889.091.19.14.331.024.529-.092.158-.168.257-.31.424-.141.167-.183.256-.051.484.286.495.733 1.041 1.258 1.509.684.609 1.246.852 1.632 1.044.24.119.349.076.497-.095.148-.172.639-.744.811-.998.172-.254.344-.212.578-.125.234.086 1.488.701 1.745.829.257.128.428.192.49.299.062.107.062.622-.082 1.027z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </nav>
+
+  <script src="customization.js"></script>
+</body>
+</html>
