@@ -36,7 +36,7 @@
 
       <div class="header-right-tools">
         <button onclick="openCartDrawer()" class="btn-classy-outline" style="padding: 8px 16px; font-size: 0.72rem; display: flex; align-items: center; gap: 6px;">
-          <span>🛍️ Bag</span>
+          <span>Cart</span>
           <span class="cart-badge-count">0</span>
         </button>
         <a href="customization.html" class="btn-classy-outline" style="padding: 8px 16px; font-size: 0.72rem;">
@@ -121,13 +121,12 @@
       <!-- Drawer Header -->
       <div style="padding: 24px; border-bottom: 1px solid #f0ede6; display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.3rem;">🛍️</span>
           <div>
-            <h3 style="font-family: var(--font-editorial); font-size: 1.4rem; font-weight: 600; color: var(--text-charcoal); line-height: 1;">Boutique Bag</h3>
+            <h3 style="font-family: var(--font-editorial); font-size: 1.4rem; font-weight: 600; color: var(--text-charcoal); line-height: 1;">Your Cart</h3>
             <span class="cart-badge-count" style="font-size: 0.65rem;">0 items</span>
           </div>
         </div>
-        <button onclick="closeCartDrawer()" style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">&times;</button>
+        <button onclick="closeCartDrawer()" style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer; background: none; border: none;">&times;</button>
       </div>
 
       <!-- Drawer Items List -->
@@ -149,19 +148,20 @@
     </div>
   </div>
 
-  <!-- Floating Bag Button -->
+  <!-- Floating Cart Button (No Emoji) -->
   <button onclick="openCartDrawer()" class="floating-cart-btn">
-    <span>🛍️ Bag</span>
+    <span>Cart</span>
     <span class="cart-badge-count">0</span>
   </button>
 
-  <!-- Big Product Quick View Modal -->
+  <!-- Big Product Quick View Modal with 3-Photo Gallery -->
   <div id="quickview-modal" class="modal-backdrop-editorial">
     <div class="modal-box-editorial">
       <button class="modal-close-editorial" onclick="closeQuickView()">&times;</button>
-      <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px;">
+      <div class="modal-grid-editorial">
         <div>
           <img id="qv-img" src="" alt="Piece" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border: 1px solid var(--border-gold); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);"/>
+          <div id="qv-gallery-thumbs" style="display: flex; gap: 8px; margin-top: 10px; justify-content: center; flex-wrap: wrap;"></div>
           <div style="margin-top: 12px; font-size: 0.72rem; color: var(--text-muted); text-align: center;">
             Availability: <strong id="qv-stock" style="color: #10b981;">In Stock</strong>
           </div>
@@ -344,7 +344,7 @@
       </a>
       <a href="javascript:void(0)" onclick="openCartDrawer()" class="mobile-nav-link" style="position: relative;">
         <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-        <span>Bag (<strong class="cart-badge-count">0</strong>)</span>
+        <span>Cart (<strong class="cart-badge-count">0</strong>)</span>
       </a>
     </div>
   </nav>

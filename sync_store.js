@@ -110,7 +110,12 @@ function syncStore() {
         const origPrice = row['Original Price'] ? (typeof row['Original Price'] === 'number' ? row['Original Price'] : parseFloat(String(row['Original Price']).replace(/[^\d.]/g, '')) || 0) : 0;
 
         const img1 = resolveImagePath(row['Image 1'] || row['Image'] || '');
-        const img2 = resolveImagePath(row['Image 2'] || '');
+        const img2 = row['Image 2'] ? resolveImagePath(row['Image 2']) : '';
+        const img3 = row['Image 3'] ? resolveImagePath(row['Image 3']) : '';
+
+        const images = [img1];
+        if (img2 && img2 !== img1) images.push(img2);
+        if (img3 && !images.includes(img3)) images.push(img3);
 
         const stock = String(row['Stock Status'] || 'In Stock').trim();
         const badge = String(row['Badge'] || row['Tagline'] || 'Fresh Arrivals').trim();
@@ -129,6 +134,8 @@ function syncStore() {
             originalPriceDisplay: origPrice > 0 ? `₹${origPrice.toLocaleString('en-IN')}` : '',
             image: img1,
             image2: img2 || img1,
+            image3: img3 || img1,
+            images: images,
             stockStatus: stock,
             badge: badge,
             tagline: badge,

@@ -109,11 +109,21 @@
           </div>
         </div>
 
-        <!-- Subcategory & Badge -->
+        <!-- Subcategory with Datalist Suggestions & Badge -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Subcategory</label>
-            <input type="text" id="prod-subcategory" placeholder="e.g. Sarees / Anarkalis" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Subcategory *</label>
+            <input type="text" id="prod-subcategory" list="subcategory-suggestions" required placeholder="Select or type..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
+            <datalist id="subcategory-suggestions">
+              <option value="Kasavu Sarees"/>
+              <option value="Bridal Lehengas"/>
+              <option value="Anarkalis"/>
+              <option value="Couture Gowns"/>
+              <option value="Co-Ord Sets"/>
+              <option value="Festive Sets"/>
+              <option value="Salwar Suits"/>
+              <option value="Kurtis"/>
+            </datalist>
           </div>
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Badge Tag</label>
@@ -136,7 +146,7 @@
         <!-- Stock Status -->
         <div>
           <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Stock Status</label>
-          <select id="prod-stock" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
+          <select id="prod-stock" onchange="checkCustomDescriptionPriority()" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
             <option value="In Stock">In Stock</option>
             <option value="Made to Order">Made to Order</option>
             <option value="Limited Stock">Limited Stock</option>
@@ -144,9 +154,14 @@
           </select>
         </div>
 
-        <!-- Description -->
+        <!-- Description (Essential for Made to Order / Custom) -->
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Creation Description</label>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px]">Creation Description</label>
+            <span id="desc-priority-badge" class="hidden text-[9px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-300">
+              ★ Essential for Made-to-Order
+            </span>
+          </div>
           <textarea id="prod-desc" rows="3" placeholder="Handcrafted in Trivandrum with authentic pure kasavu zari..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
         </div>
 
@@ -453,12 +468,78 @@
       `;
     }
 
+    function checkCustomDescriptionPriority() {
+      const cat = document.getElementById('prod-category').value;
+      const stock = document.getElementById('prod-stock').value;
+      const badge = document.getElementById('desc-priority-badge');
+      const descTextarea = document.getElementById('prod-desc');
+
+      if (cat === 'Customization' || stock === 'Made to Order') {
+        badge.classList.remove('hidden');
+        descTextarea.placeholder = "Please enter detailed measurements, fabric composition, embroidery work, and styling specifics (essential for Made-to-Order couture)...";
+        descTextarea.classList.add('border-amber-400');
+      } else {
+        badge.classList.add('hidden');
+        descTextarea.placeholder = "Handcrafted in Trivandrum with authentic pure kasavu zari...";
+        descTextarea.classList.remove('border-amber-400');
+      }
+    }
+
     function handleCategoryChange() {
-      if (isEditingMode) return;
       const cat = document.getElementById('prod-category').value;
       const prefix = cat === 'Ladies Wear' ? 'NDS-LW' : (cat === 'Mens Wear' ? 'NDS-MW' : 'NDS-CU');
-      const count = productsList.filter(p => p.category === cat).length + 101;
-      document.getElementById('prod-code').value = `${prefix}-${count}`;
+
+      // Update subcategories datalist
+      const dl = document.getElementById('subcategory-suggestions');
+      if (dl) {
+        if (cat === 'Ladies Wear') {
+          dl.innerHTML = `
+            <option value="Kasavu Sarees"/>
+            <option value="Bridal Lehengas"/>
+            <option value="Anarkalis"/>
+            <option value="Couture Gowns"/>
+            <option value="Co-Ord Sets"/>
+            <option value="Festive Sets"/>
+            <option value="Salwar Suits"/>
+            <option value="Kurtis"/>
+          `;
+        } else if (cat === 'Mens Wear') {
+          dl.innerHTML = `
+            <option value="Kasavu Mundu Sets"/>
+            <option value="Raw Silk Kurtas"/>
+            <option value="Royal Groom Sherwanis"/>
+            <option value="Tuxedos & Suits"/>
+            <option value="Nehru Jackets"/>
+            <option value="Jubba Sets"/>
+          `;
+        } else {
+          dl.innerHTML = `
+            <option value="Bespoke Bridal Couture"/>
+            <option value="Custom Groom Ensemble"/>
+            <option value="Handloom Kasavu Weaving"/>
+            <option value="Made-to-Order Gown"/>
+            <option value="Hand-Embroidered Blouse"/>
+          `;
+        }
+      }
+
+      checkCustomDescriptionPriority();
+
+      if (isEditingMode) return;
+
+      // Auto-generate code starting strictly from 1000
+      let maxNum = 1000;
+      productsList.forEach(p => {
+        if (p.code && p.code.startsWith(prefix)) {
+          const m = p.code.match(/-(\d+)$/);
+          if (m) {
+            const num = parseInt(m[1], 10);
+            if (!isNaN(num) && num > maxNum) maxNum = num;
+          }
+        }
+      });
+
+      document.getElementById('prod-code').value = `${prefix}-${maxNum + 1}`;
     }
 
     function editProduct(code) {

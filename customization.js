@@ -54,8 +54,9 @@ function renderMadeToOrderGrid() {
     card.className = 'editorial-card';
     card.style.background = '#121216';
     card.style.borderColor = 'rgba(184, 151, 88, 0.3)';
+    card.style.cursor = 'pointer';
+    card.setAttribute('onclick', `openCustomModal('${p.code}')`);
 
-    // Notice: Clean card without long descriptions, with direct Bespoke Fitting action
     card.innerHTML = `
       <div class="editorial-card-img-wrap" style="background: #09090b;">
         <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='images/1.jpeg'"/>
@@ -71,7 +72,7 @@ function renderMadeToOrderGrid() {
           <span class="editorial-price" style="color: var(--gold-soft); font-family: var(--font-editorial); font-size: 1.25rem;">${p.priceDisplay}</span>
           <span style="font-size: 0.68rem; color: #10b981; margin-left: auto; text-transform: uppercase; font-weight: 600;">Made to Order</span>
         </div>
-        <button onclick="openCustomModal('${p.code}')" class="btn-classy" style="width: 100%; background: var(--gold-antique); color: #fff; padding: 11px 0; font-size: 0.72rem;">
+        <button onclick="event.stopPropagation(); openCustomModal('${p.code}')" class="btn-classy" style="width: 100%; background: var(--gold-antique); color: #fff; padding: 11px 0; font-size: 0.72rem;">
           Request Bespoke Fitting &rarr;
         </button>
       </div>
@@ -81,23 +82,67 @@ function renderMadeToOrderGrid() {
   });
 }
 
+function revealBespokeForm() {
+  const trigger = document.getElementById('bespoke-action-trigger');
+  const formSection = document.getElementById('custom-form-section');
+  if (trigger) trigger.style.display = 'none';
+  if (formSection) {
+    formSection.style.display = 'block';
+    formSection.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 function openCustomModal(code) {
   const p = allProducts.find(item => item.code === code) || {
     code: 'NDS-CU-BESPOKE',
     name: 'Bespoke Haute Couture Creation',
     priceDisplay: 'On Consultation',
-    image: 'images/5.png'
+    image: 'images/5.png',
+    description: 'Custom bespoke bridal dress tailored individually to your measurements in Trivandrum.'
   };
 
   activeCustomProduct = p;
   const modal = document.getElementById('custom-booking-modal');
   if (!modal) return;
 
+  // Reset two-step form visibility
+  const trigger = document.getElementById('bespoke-action-trigger');
+  const formSection = document.getElementById('custom-form-section');
+  if (trigger) trigger.style.display = 'block';
+  if (formSection) formSection.style.display = 'none';
+
   document.getElementById('custom-modal-title').innerText = p.name;
   document.getElementById('custom-modal-code').innerText = p.code;
   document.getElementById('custom-modal-price').innerText = p.priceDisplay;
   document.getElementById('custom-modal-img').src = p.image;
-  document.getElementById('custom-preview-name').innerText = p.name;
+
+  const descEl = document.getElementById('custom-modal-desc');
+  if (descEl) {
+    descEl.innerText = p.description || 'Artisanal Kerala bridal couture crafted with authentic heirloom kasavu, zardozi embroidery, and precision fitting tailored at Naomika Design Studio in Trivandrum.';
+  }
+
+  // Thumbnails
+  const thumbsContainer = document.getElementById('custom-gallery-thumbs');
+  if (thumbsContainer) {
+    thumbsContainer.innerHTML = '';
+    const images = (p.images && p.images.length > 0) ? p.images : [p.image];
+    if (p.image2 && !images.includes(p.image2)) images.push(p.image2);
+    if (p.image3 && !images.includes(p.image3)) images.push(p.image3);
+
+    if (images.length > 1) {
+      images.forEach(imgSrc => {
+        const thumb = document.createElement('img');
+        thumb.src = imgSrc;
+        thumb.style.cssText = 'width: 52px; height: 68px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--gold-antique); opacity: 0.8;';
+        thumb.onclick = () => {
+          document.getElementById('custom-modal-img').src = imgSrc;
+          thumbsContainer.querySelectorAll('img').forEach(t => t.style.opacity = '0.6');
+          thumb.style.opacity = '1';
+        };
+        thumbsContainer.appendChild(thumb);
+      });
+    }
+  }
 
   const dateInput = document.getElementById('custom-date');
   if (dateInput) {

@@ -58,14 +58,9 @@
   <!-- Made-to-Order Collection Grid -->
   <main style="padding: 30px 32px 80px; max-width: 1400px; margin: 0 auto;">
     
-    <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid rgba(184, 151, 88, 0.25); padding-bottom: 16px; margin-bottom: 40px;">
-      <div>
-        <h2 style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff;">Made to Order Creations</h2>
-        <p style="font-size: 0.82rem; color: #a1a1aa;">Choose any creation below to request custom fitting or bespoke modifications.</p>
-      </div>
-      <button onclick="openCustomModal('NDS-CU-BESPOKE')" class="btn-classy-outline" style="border-color: var(--gold-antique); color: var(--gold-soft); background: transparent; font-size: 0.72rem; padding: 8px 18px;">
-        + Custom Design Request
-      </button>
+    <div style="border-bottom: 1px solid rgba(184, 151, 88, 0.25); padding-bottom: 16px; margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff;">Made to Order Creations</h2>
+      <p style="font-size: 0.82rem; color: #a1a1aa;">Tap any creation below to inspect details and schedule a bespoke fitting consultation.</p>
     </div>
 
     <!-- Target Grid for Made-to-Order Creations -->
@@ -77,27 +72,45 @@
 
   <!-- Consultation & Date Booking Modal -->
   <div id="custom-booking-modal" class="modal-backdrop-editorial">
-    <div class="modal-box-editorial" style="background: #131317; color: #f4f4f5; border-color: rgba(184, 151, 88, 0.4);">
+    <div class="modal-box-editorial" style="background: #131317; color: #f4f4f5; border-color: rgba(184, 151, 88, 0.4); max-width: 640px;">
       <button class="modal-close-editorial" style="color: #a1a1aa;" onclick="closeCustomModal()">&times;</button>
       
-      <div style="text-align: center; margin-bottom: 24px;">
+      <!-- Modal Header -->
+      <div style="text-align: center; margin-bottom: 20px;">
         <span style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--gold-soft); text-transform: uppercase; font-weight: 600;">
-          Naomika Bespoke Fitting
+          Naomika Bespoke Atelier
         </span>
-        <h3 id="custom-modal-title" style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff; margin-top: 4px;">Custom Couture Order</h3>
-        <p id="custom-modal-code" style="font-family: monospace; font-size: 0.75rem; color: #71717a;"></p>
+        <h3 id="custom-modal-title" style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff; margin-top: 4px;"></h3>
+        <p id="custom-modal-code" style="font-family: monospace; font-size: 0.75rem; color: #a1a1aa;"></p>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 16px; background: #0c0c0f; padding: 14px 18px; border: 1px solid rgba(184, 151, 88, 0.25); border-radius: 10px; margin-bottom: 24px;">
-        <img id="custom-modal-img" src="" style="width: 60px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-gold);" onerror="this.src='images/1.jpeg'"/>
-        <div style="flex: 1;">
-          <h4 id="custom-preview-name" style="font-family: var(--font-editorial); font-size: 1.2rem; color: #ffffff; font-weight: 500;"></h4>
-          <span style="font-size: 0.72rem; color: var(--gold-soft); letter-spacing: 0.1em; text-transform: uppercase;">Handcrafted In Trivandrum</span>
-        </div>
-        <div id="custom-modal-price" style="font-weight: 700; font-size: 1.1rem; color: var(--gold-soft); font-family: var(--font-editorial);"></div>
+      <!-- Step 1: Big Photo Preview -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img id="custom-modal-img" src="" style="width: 100%; max-height: 380px; object-fit: contain; background: #08080a; border-radius: 12px; border: 1px solid rgba(184, 151, 88, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5);" onerror="this.src='images/1.jpeg'"/>
+        <div id="custom-gallery-thumbs" style="display: flex; gap: 8px; margin-top: 10px; justify-content: center; flex-wrap: wrap;"></div>
       </div>
 
-      <form onsubmit="submitCustomForm(event)">
+      <!-- Price & Heritage Badge -->
+      <div style="display: flex; justify-content: space-between; align-items: baseline; background: #0c0c0f; padding: 12px 18px; border: 1px solid rgba(184, 151, 88, 0.25); border-radius: 8px; margin-bottom: 18px;">
+        <span style="font-size: 0.72rem; color: var(--gold-soft); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;">Handcrafted In Trivandrum</span>
+        <div id="custom-modal-price" style="font-weight: 700; font-size: 1.3rem; color: var(--gold-soft); font-family: var(--font-editorial);"></div>
+      </div>
+
+      <!-- Step 2: Full Couture Description -->
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Couture Details & Description</label>
+        <p id="custom-modal-desc" style="font-size: 0.88rem; color: #e4e4e7; line-height: 1.7; background: #0c0c0f; padding: 16px; border-radius: 8px; border: 1px solid rgba(184, 151, 88, 0.25);"></p>
+      </div>
+
+      <!-- Step 3: Trigger Button to Reveal Booking Form -->
+      <div id="bespoke-action-trigger" style="margin-bottom: 24px;">
+        <button type="button" onclick="revealBespokeForm()" class="btn-classy" style="width: 100%; padding: 14px 0; background: var(--gold-antique); color: #fff; font-size: 0.78rem;">
+          Request Bespoke Fitting &darr;
+        </button>
+      </div>
+
+      <!-- Step 4: The Consultation Booking Form -->
+      <form id="custom-form-section" onsubmit="submitCustomForm(event)" style="display: none; border-top: 1px solid rgba(184, 151, 88, 0.3); padding-top: 24px;">
         <div style="margin-bottom: 16px;">
           <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Client Full Name *</label>
           <input type="text" id="custom-name" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" placeholder="e.g. Ananya Nair" required/>
@@ -115,7 +128,7 @@
             <input type="date" id="custom-date" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" required/>
           </div>
           <div>
-            <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Time Slot Preference</label>
+            <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Time Slot Preference *</label>
             <select id="custom-slot" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;">
               <option value="Morning (10:30 AM - 1:00 PM)">Morning</option>
               <option value="Afternoon (2:00 PM - 5:00 PM)" selected>Afternoon</option>
@@ -125,8 +138,11 @@
         </div>
 
         <div style="margin-bottom: 20px;">
-          <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; color: var(--gold-soft);">Measurement Details / Neckline & Fabric Preference</label>
-          <textarea id="custom-notes" rows="2" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" placeholder="Mention your event date, silk color choice, or blouse pattern"></textarea>
+          <div class="flex justify-between items-center mb-1">
+            <label style="display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-soft);">Measurement Details / Neckline & Fabric Preference</label>
+            <span style="font-size: 0.68rem; color: #71717a;">(Optional)</span>
+          </div>
+          <textarea id="custom-notes" rows="2" style="width: 100%; padding: 11px 14px; background: #0c0c0f; border: 1px solid rgba(184, 151, 88, 0.3); border-radius: 8px; color: #fff; outline: none; font-size: 0.88rem;" placeholder="Mention your event date, silk color choice, or blouse pattern (optional)"></textarea>
         </div>
 
         <!-- Studio Availability Review Notice -->
@@ -139,7 +155,7 @@
           </p>
         </div>
 
-        <button type="submit" class="btn-classy" style="width: 100%; padding: 14px 0; background: var(--gold-antique); color: #fff;">
+        <button type="submit" class="btn-classy" style="width: 100%; padding: 14px 0; background: var(--gold-antique); color: #fff; font-size: 0.78rem;">
           Schedule Consultation & Confirm via WhatsApp &rarr;
         </button>
       </form>

@@ -16,7 +16,7 @@ let currentSort = 'default';
 let displayedCount = 0;
 let activeModalProduct = null;
 
-// Cart System
+// Cart System (NO emojis)
 let cart = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -124,8 +124,10 @@ function renderNextBatch() {
   nextBatch.forEach(product => {
     const card = document.createElement('div');
     card.className = 'editorial-card';
+    // Entire card is clickable anywhere to pop up full product details
+    card.setAttribute('onclick', `openQuickView('${product.code}')`);
 
-    // Notice: NO description on product cards, only clean visual metadata & actions
+    // Notice: NO description on product cards; only a single "Add to Cart" button (no emojis)
     card.innerHTML = `
       <div class="editorial-card-img-wrap">
         <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.src='images/1.jpeg'"/>
@@ -142,10 +144,9 @@ function renderNextBatch() {
           ${product.originalPriceDisplay ? `<span class="editorial-orig-price">${product.originalPriceDisplay}</span>` : ''}
           <span style="font-size: 0.65rem; color: #10b981; margin-left: auto; text-transform: uppercase; font-weight: 600;">${product.stockStatus || 'In Stock'}</span>
         </div>
-        <div class="editorial-actions">
-          <button class="btn-card-view" onclick="openQuickView('${product.code}')">View Details</button>
-          <button class="btn-card-add-cart" onclick="addToCart('${product.code}')">
-            <span>🛍️</span> Add to Cart
+        <div class="editorial-actions" style="grid-template-columns: 1fr;">
+          <button class="btn-card-add-cart" onclick="event.stopPropagation(); addToCart('${product.code}')">
+            Add to Cart
           </button>
         </div>
       </div>
@@ -191,7 +192,7 @@ function setupFilterEvents() {
   }
 }
 
-// Quick View Modal
+// Big Product Details Modal with 3-Photo Viewer Support
 function openQuickView(code) {
   const p = allProducts.find(item => item.code === code);
   if (!p) return;
@@ -202,12 +203,35 @@ function openQuickView(code) {
 
   document.getElementById('qv-title').innerText = p.name;
   document.getElementById('qv-code').innerText = p.code;
-  document.getElementById('qv-sub').innerText = `${p.category} • ${p.subcategory}`;
+  document.getElementById('qv-sub').innerText = `${p.category} • ${p.subcategory || 'Signature Couture'}`;
   document.getElementById('qv-price').innerText = p.priceDisplay;
   document.getElementById('qv-orig-price').innerText = p.originalPriceDisplay || '';
-  document.getElementById('qv-desc').innerText = p.description;
+  document.getElementById('qv-desc').innerText = p.description || 'Handcrafted designer creation tailored with authentic artisanal expertise in Trivandrum, Kerala.';
   document.getElementById('qv-img').src = p.image;
   document.getElementById('qv-stock').innerText = p.stockStatus || 'In Stock';
+
+  // Support 3 Photos in Details Modal
+  const galleryThumbs = document.getElementById('qv-gallery-thumbs');
+  if (galleryThumbs) {
+    galleryThumbs.innerHTML = '';
+    const images = (p.images && p.images.length > 0) ? p.images : [p.image];
+    if (p.image2 && !images.includes(p.image2)) images.push(p.image2);
+    if (p.image3 && !images.includes(p.image3)) images.push(p.image3);
+
+    if (images.length > 1) {
+      images.forEach((imgSrc, idx) => {
+        const thumb = document.createElement('img');
+        thumb.src = imgSrc;
+        thumb.style.cssText = 'width: 48px; height: 62px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-gold); opacity: 0.8;';
+        thumb.onclick = () => {
+          document.getElementById('qv-img').src = imgSrc;
+          galleryThumbs.querySelectorAll('img').forEach(t => t.style.opacity = '0.6');
+          thumb.style.opacity = '1';
+        };
+        galleryThumbs.appendChild(thumb);
+      });
+    }
+  }
 
   modal.classList.add('open');
 }
@@ -217,7 +241,7 @@ function closeQuickView() {
   if (modal) modal.classList.remove('open');
 }
 
-// Cart Logic
+// Cart Engine (No emojis)
 function addToCart(code, customSize = null) {
   const p = allProducts.find(item => item.code === code);
   if (!p) return;
@@ -289,9 +313,8 @@ function renderCartUI() {
   if (cart.length === 0) {
     cartList.innerHTML = `
       <div style="text-align: center; padding: 60px 20px; color: var(--text-dim);">
-        <div style="font-size: 2.5rem; margin-bottom: 10px;">🛍️</div>
-        <p style="font-family: var(--font-editorial); font-size: 1.4rem; color: var(--text-charcoal); margin-bottom: 6px;">Your Bag is Empty</p>
-        <p style="font-size: 0.8rem;">Explore our Fresh Arrivals to add items to your boutique bag.</p>
+        <p style="font-family: var(--font-editorial); font-size: 1.4rem; color: var(--text-charcoal); margin-bottom: 6px;">Your Cart is Empty</p>
+        <p style="font-size: 0.8rem;">Browse our creations and click Add to Cart to begin.</p>
       </div>
     `;
     const checkoutBtn = document.getElementById('cart-checkout-btn');
@@ -314,11 +337,11 @@ function renderCartUI() {
         <div style="font-weight: 600; font-size: 0.95rem; margin-top: 4px; color: var(--text-charcoal);">${item.priceDisplay}</div>
       </div>
       <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-        <button onclick="removeFromCart(${idx})" style="color: #ef4444; font-size: 0.75rem; text-decoration: underline;">Remove</button>
+        <button onclick="removeFromCart(${idx})" style="color: #ef4444; font-size: 0.75rem; text-decoration: underline; background: none; border: none; cursor: pointer;">Remove</button>
         <div style="display: flex; align-items: center; border: 1px solid #e4e4e7; border-radius: 4px; background: #fafafa;">
-          <button onclick="updateCartQty(${idx}, -1)" style="padding: 2px 8px; font-weight: bold;">-</button>
+          <button onclick="updateCartQty(${idx}, -1)" style="padding: 2px 8px; font-weight: bold; background: none; border: none; cursor: pointer;">-</button>
           <span style="padding: 2px 8px; font-size: 0.8rem; font-weight: 600;">${item.qty}</span>
-          <button onclick="updateCartQty(${idx}, 1)" style="padding: 2px 8px; font-weight: bold;">+</button>
+          <button onclick="updateCartQty(${idx}, 1)" style="padding: 2px 8px; font-weight: bold; background: none; border: none; cursor: pointer;">+</button>
         </div>
       </div>
     `;
@@ -339,7 +362,6 @@ function openCheckoutModal() {
   const modal = document.getElementById('order-modal');
   if (!modal) return;
 
-  // Render Big Product Preview Card
   const previewWrap = document.getElementById('checkout-big-preview');
   if (previewWrap) {
     previewWrap.innerHTML = '';
@@ -415,15 +437,15 @@ function submitOrderForm(event) {
 
   let itemsSummary = cart.map(i => `• ${i.name} (${i.code}) - Size: ${i.size} - Qty: ${i.qty} - ₹${(i.price * i.qty).toLocaleString('en-IN')}`).join('\n');
 
-  const waMessage = `Hello Naomika Design Studio! ✨\n` +
+  const waMessage = `Hello Naomika Design Studio!\n` +
     `I would like to place an order from your boutique collection.\n\n` +
-    `📋 *Order ID:* #${orderId}\n` +
-    `👤 *Customer Name:* ${name}\n` +
-    `📞 *Phone:* ${phone}\n` +
-    `📍 *Delivery Address:* ${address}, ${city}\n\n` +
-    `👗 *Items Ordered:*\n${itemsSummary}\n\n` +
-    `💰 *Grand Total:* ₹${grandTotal.toLocaleString('en-IN')}\n\n` +
-    `📄 *Official Digital Receipt:* \n${receiptUrl}`;
+    `*Order ID:* #${orderId}\n` +
+    `*Customer Name:* ${name}\n` +
+    `*Phone:* ${phone}\n` +
+    `*Delivery Address:* ${address}, ${city}\n\n` +
+    `*Items Ordered:*\n${itemsSummary}\n\n` +
+    `*Grand Total:* ₹${grandTotal.toLocaleString('en-IN')}\n\n` +
+    `*Official Digital Receipt:* \n${receiptUrl}`;
 
   const waUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
 
