@@ -298,7 +298,7 @@ button {
   justify-content: center;
   padding: 60px 24px;
   background: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.68), rgba(250, 248, 245, 0.88)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.18), rgba(250, 248, 245, 0.38)),
     url('images/hero_naomika_entrance.jpg') center/cover no-repeat;
   border-bottom: 1px solid var(--border-hairline);
 }
@@ -307,11 +307,11 @@ button {
   max-width: 840px;
   width: 100%;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(184, 151, 88, 0.38);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12), inset 0 0 20px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.9);
   border-radius: 16px;
   padding: 56px 44px;
   text-align: center;
@@ -322,25 +322,28 @@ button {
   align-items: center;
   gap: 8px;
   padding: 6px 18px;
-  background: rgba(184, 151, 88, 0.14);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
   border: 1px solid var(--border-gold);
   border-radius: 50px;
   font-size: 0.72rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--gold-burnished);
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .hero-main-title {
   font-family: var(--font-editorial);
   font-size: clamp(2.6rem, 5vw, 4.4rem);
-  font-weight: 500;
-  color: var(--text-charcoal);
+  font-weight: 600;
+  color: #111113;
   line-height: 1.1;
   margin-bottom: 18px;
   letter-spacing: -0.01em;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
 }
 
 .hero-main-title em {
@@ -350,11 +353,12 @@ button {
 
 .hero-lead-text {
   font-size: 1.05rem;
-  color: var(--text-dim);
+  color: #1f1f23;
   line-height: 1.8;
   max-width: 620px;
   margin: 0 auto 36px;
-  font-weight: 300;
+  font-weight: 400;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.85);
 }
 
 .hero-cta-buttons {
@@ -380,7 +384,7 @@ button {
   justify-content: center;
   padding: 60px 24px;
   background: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.65), rgba(250, 248, 245, 0.88)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.22), rgba(250, 248, 245, 0.42)),
     url('images/ladies_collection_hanging.jpg') center/cover no-repeat;
   color: var(--text-charcoal);
   border-bottom: 1px solid var(--border-gold);
@@ -395,11 +399,129 @@ button {
   justify-content: center;
   padding: 60px 24px;
   background: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.65), rgba(250, 248, 245, 0.88)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.22), rgba(250, 248, 245, 0.42)),
     url('images/mens_collection_hanging.jpg') center/cover no-repeat;
   color: var(--text-charcoal);
   border-bottom: 1px solid var(--border-gold);
   text-align: center;
+}
+
+/* ========================================================
+   HIGH-END LUXURY SEARCH & SORT CONTROLS
+   ======================================================== */
+.filter-search-editorial {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid rgba(184, 151, 88, 0.45);
+  border-radius: 50px;
+  padding: 8px 18px 8px 14px;
+  box-shadow: 0 4px 14px rgba(184, 151, 88, 0.08);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 250px;
+  max-width: 100%;
+}
+
+.filter-search-editorial:hover,
+.filter-search-editorial:focus-within {
+  border-color: var(--gold-antique);
+  box-shadow: 0 6px 22px rgba(184, 151, 88, 0.22), 0 0 0 3px rgba(184, 151, 88, 0.12);
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.filter-search-editorial svg {
+  color: var(--gold-antique);
+  flex-shrink: 0;
+  margin-right: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.filter-search-editorial:focus-within svg {
+  color: var(--gold-burnished);
+  transform: scale(1.1);
+}
+
+.filter-search-editorial input {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-charcoal);
+  width: 100%;
+  letter-spacing: 0.03em;
+  padding: 2px 0;
+}
+
+.filter-search-editorial input::placeholder {
+  color: #a1a1aa;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.02em;
+}
+
+/* Matching Luxury Sort Dropdown */
+select#catalog-sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23b89758' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat calc(100% - 14px) center;
+  border: 1.5px solid rgba(184, 151, 88, 0.45) !important;
+  border-radius: 50px !important;
+  padding: 9px 36px 9px 18px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--text-charcoal) !important;
+  box-shadow: 0 4px 14px rgba(184, 151, 88, 0.08) !important;
+  outline: none !important;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+select#catalog-sort-select:hover,
+select#catalog-sort-select:focus {
+  border-color: var(--gold-antique) !important;
+  box-shadow: 0 6px 22px rgba(184, 151, 88, 0.2), 0 0 0 3px rgba(184, 151, 88, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+/* Customization Dark Mode Luxury Search */
+.theme-noir-custom .filter-search-editorial {
+  background: #121216;
+  border-color: rgba(184, 151, 88, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.theme-noir-custom .filter-search-editorial:hover,
+.theme-noir-custom .filter-search-editorial:focus-within {
+  border-color: var(--gold-soft);
+  box-shadow: 0 6px 24px rgba(184, 151, 88, 0.25), 0 0 0 2px rgba(184, 151, 88, 0.15);
+  background: #16161b;
+}
+
+.theme-noir-custom .filter-search-editorial input {
+  color: #ffffff;
+}
+
+.theme-noir-custom .filter-search-editorial input::placeholder {
+  color: #71717a;
+}
+
+@media (max-width: 640px) {
+  .filter-search-editorial {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 10px 18px !important;
+  }
+  select#catalog-sort-select {
+    width: 100% !important;
+    padding: 10px 36px 10px 18px !important;
+  }
 }
 
 /* Fresh Arrivals Grid - Cards are Fully Clickable */
@@ -565,6 +687,35 @@ button {
 
 .theme-noir-custom .mobile-nav-link.active {
   color: var(--gold-soft) !important;
+}
+
+.banner-custom-atelier {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(184, 151, 88, 0.18), transparent 70%),
+    linear-gradient(to bottom, rgba(10, 10, 12, 0.25), rgba(10, 10, 12, 0.55)),
+    url('images/hero_naomika_entrance.jpg') center/cover no-repeat;
+  border-bottom: 1px solid rgba(184, 151, 88, 0.25);
+  text-align: center;
+}
+
+.glassmorphism-card-noir {
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  background: rgba(18, 18, 22, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(184, 151, 88, 0.35);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 50px 36px;
+  text-align: center;
 }
 
 /* Cart Slide-out Drawer */

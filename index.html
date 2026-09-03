@@ -96,10 +96,14 @@
         </h2>
       </div>
 
-      <!-- Clean Sorting Controls -->
-      <div style="display: flex; align-items: center; gap: 14px;">
-        <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Sort By:</span>
-        <select id="catalog-sort-select" style="padding: 8px 16px; border: 1px solid var(--border-gold); font-size: 0.78rem; background: #fff; font-family: inherit; outline: none; border-radius: 8px; font-weight: 500;">
+      <!-- Clean Search & Sorting Controls -->
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <div class="filter-search-editorial">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="catalog-search-input" placeholder="Search creations or code..."/>
+        </div>
+
+        <select id="catalog-sort-select">
           <option value="default">Newest First</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>

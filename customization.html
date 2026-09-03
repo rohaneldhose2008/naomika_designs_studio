@@ -42,14 +42,14 @@
     </div>
   </header>
 
-  <!-- Banner -->
-  <section style="padding: 70px 32px 40px; text-align: center;">
-    <div style="max-width: 860px; margin: 0 auto;">
+  <!-- Hero Banner with Translucent Atelier Background -->
+  <section class="banner-custom-atelier">
+    <div class="glassmorphism-card-noir">
       <span class="editorial-section-sub" style="color: var(--gold-soft); letter-spacing: 0.25em;">Bespoke Fashion Studio</span>
       <h1 class="editorial-section-title" style="color: #ffffff; margin-bottom: 16px;">
         Made-to-Order & Custom Couture
       </h1>
-      <p style="font-size: 0.95rem; color: #a1a1aa; line-height: 1.8; max-width: 680px; margin: 0 auto;">
+      <p style="font-size: 0.95rem; color: #e4e4e7; line-height: 1.8; max-width: 680px; margin: 0 auto;">
         Every silhouette is individually drafted and customized to your exact measurements, color palette, and occasion by our master artisans in Trivandrum.
       </p>
     </div>
@@ -58,9 +58,16 @@
   <!-- Made-to-Order Collection Grid -->
   <main style="padding: 30px 32px 80px; max-width: 1400px; margin: 0 auto;">
     
-    <div style="border-bottom: 1px solid rgba(184, 151, 88, 0.25); padding-bottom: 16px; margin-bottom: 40px;">
-      <h2 style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff;">Made to Order Creations</h2>
-      <p style="font-size: 0.82rem; color: #a1a1aa;">Tap any creation below to inspect details and schedule a bespoke fitting consultation.</p>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid rgba(184, 151, 88, 0.25); padding-bottom: 20px; margin-bottom: 40px;">
+      <div>
+        <h2 style="font-family: var(--font-editorial); font-size: 1.8rem; color: #ffffff;">Made to Order Creations</h2>
+        <p style="font-size: 0.82rem; color: #a1a1aa;">Tap any creation below to inspect details and schedule a bespoke fitting consultation.</p>
+      </div>
+
+      <div class="filter-search-editorial">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="custom-search-input" placeholder="Search bespoke gowns, couture..."/>
+      </div>
     </div>
 
     <!-- Target Grid for Made-to-Order Creations -->

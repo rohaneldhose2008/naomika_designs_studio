@@ -13,6 +13,7 @@ let allProducts = [];
 document.addEventListener('DOMContentLoaded', () => {
   initCustomPortfolio();
   setupCustomModalEvents();
+  setupSearchEvent();
 });
 
 function initCustomPortfolio() {
@@ -32,20 +33,36 @@ function initCustomPortfolio() {
   }
 }
 
-function renderMadeToOrderGrid() {
+function setupSearchEvent() {
+  const searchInput = document.getElementById('custom-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      renderMadeToOrderGrid(q);
+    });
+  }
+}
+
+function renderMadeToOrderGrid(query = '') {
   const grid = document.getElementById('made-to-order-grid');
   if (!grid) return;
 
-  const madeToOrderList = allProducts.filter(p =>
-    p.category.toLowerCase() === 'customization' ||
-    p.stockStatus === 'Made to Order' ||
-    (p.badge && (p.badge.includes('Couture') || p.badge.includes('Bespoke')))
-  );
+  const madeToOrderList = allProducts.filter(p => {
+    const isCustom = p.category.toLowerCase() === 'customization' ||
+                     p.stockStatus === 'Made to Order' ||
+                     (p.badge && (p.badge.includes('Couture') || p.badge.includes('Bespoke')));
+    if (!isCustom) return false;
+    if (!query) return true;
+    return p.name.toLowerCase().includes(query) ||
+           p.code.toLowerCase().includes(query) ||
+           (p.subcategory || '').toLowerCase().includes(query) ||
+           (p.description || '').toLowerCase().includes(query);
+  });
 
   grid.innerHTML = '';
 
   if (madeToOrderList.length === 0) {
-    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No bespoke creations found.</p>`;
+    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px 0;">No matching bespoke creations found.</p>`;
     return;
   }
 
