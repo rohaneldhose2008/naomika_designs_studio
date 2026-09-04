@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "id": 1,
+    "code": "NDS-CU-1001",
+    "name": "Purple gown",
+    "category": "Customization",
+    "subcategory": "Bespoke Bridal Couture",
+    "price": 17500,
+    "priceDisplay": "₹17,500",
+    "originalPrice": 0,
+    "originalPriceDisplay": "",
+    "image": "images/3_1788531630686-7753.jpeg",
+    "image2": "images/3_1788531630686-7753.jpeg",
+    "image3": "images/3_1788531630686-7753.jpeg",
+    "images": [
+      "images/3_1788531630686-7753.jpeg"
+    ],
+    "stockStatus": "Limited Stock",
+    "badge": "Fresh Arrivals",
+    "tagline": "Fresh Arrivals",
+    "description": "Handcrafted designer creation by Naomika Design Studio.",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "code": "NDS-LW-1002",
+    "name": "Ivory top and pant",
+    "category": "Ladies Wear",
+    "subcategory": "Co-Ord Sets",
+    "price": 6500,
+    "priceDisplay": "₹6,500",
+    "originalPrice": 0,
+    "originalPriceDisplay": "",
+    "image": "images/1_1788531606882-8672.jpeg",
+    "image2": "images/1_1788531606882-8672.jpeg",
+    "image3": "images/1_1788531606882-8672.jpeg",
+    "images": [
+      "images/1_1788531606882-8672.jpeg"
+    ],
+    "stockStatus": "In Stock",
+    "badge": "Fresh Arrivals",
+    "tagline": "Fresh Arrivals",
+    "description": "Handcrafted designer creation by Naomika Design Studio.",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "code": "NDS-LW-1001",
+    "name": "Red Co-Ord Sets",
+    "category": "Customization",
+    "subcategory": "Co-Ord Sets",
+    "price": 4450,
+    "priceDisplay": "₹4,450",
+    "originalPrice": 0,
+    "originalPriceDisplay": "",
+    "image": "images/2_1788531469161-2419.jpeg",
+    "image2": "images/2_1788531469161-2419.jpeg",
+    "image3": "images/2_1788531469161-2419.jpeg",
+    "images": [
+      "images/2_1788531469161-2419.jpeg"
+    ],
+    "stockStatus": "Made to Order",
+    "badge": "Fresh Arrivals",
+    "tagline": "Fresh Arrivals",
+    "description": "Handcrafted designer creation by Naomika Design Studio.",
+    "featured": true
+  }
+]

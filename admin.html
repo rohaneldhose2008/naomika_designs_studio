@@ -296,7 +296,7 @@
         tr.innerHTML = `
           <td class="p-3">
             <div class="relative w-9 h-11">
-              <img src="${p.image}" class="w-9 h-11 object-cover rounded border border-slate-200" onerror="this.src='images/1.jpeg'"/>
+              <img src="${p.image}" class="w-9 h-11 object-contain bg-slate-50 rounded border border-slate-200" onerror="this.src='images/1.jpeg'"/>
               ${imgCount > 1 ? `<span class="absolute -bottom-1 -right-1 bg-amber-600 text-white rounded-full text-[9px] px-1 font-bold">${imgCount}</span>` : ''}
             </div>
           </td>
@@ -437,7 +437,7 @@
         const slot = document.createElement('div');
         slot.className = 'relative border border-slate-300 rounded-lg overflow-hidden bg-white shadow-sm';
         slot.innerHTML = `
-          <img src="${src}" class="w-full h-24 object-cover"/>
+          <img src="${src}" class="w-full h-24 object-contain bg-slate-50"/>
           <span class="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">
             ${idx === 0 ? 'Main' : (idx === 1 ? 'Side' : 'Fabric')}
           </span>

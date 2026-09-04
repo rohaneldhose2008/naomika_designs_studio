@@ -292,19 +292,19 @@ button {
 /* Authentic Naomika Designs Storefront Hero Section */
 .hero-glassmorphism-section {
   position: relative;
-  min-height: 88vh;
+  min-height: 85vh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 60px 24px;
+  padding: 90px 24px 44px;
   background: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.18), rgba(250, 248, 245, 0.38)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(250, 248, 245, 0.35)),
     url('images/hero_naomika_entrance.jpg') center/cover no-repeat;
   border-bottom: 1px solid var(--border-hairline);
 }
 
 .glassmorphism-card {
-  max-width: 840px;
+  max-width: 800px;
   width: 100%;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.45);
@@ -313,7 +313,7 @@ button {
   border: 1.5px solid rgba(255, 255, 255, 0.75);
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.9);
   border-radius: 16px;
-  padding: 56px 44px;
+  padding: 38px 36px 32px;
   text-align: center;
 }
 
@@ -556,18 +556,21 @@ select#catalog-sort-select:focus {
   width: 100%;
   aspect-ratio: 3/4;
   overflow: hidden;
-  background: var(--bg-cream);
+  background: #fbf9f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .editorial-card-img-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  object-fit: contain;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-card:hover .editorial-card-img-wrap img {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .editorial-card-badge {
@@ -847,45 +850,108 @@ select#catalog-sort-select:focus {
     padding: 12px !important;
   }
   
-  /* Mobile Product Grid */
+  /* Mobile Product Grid - Refined 2-Column Luxury Layout */
   main {
-    padding: 28px 16px 80px !important;
+    padding: 20px 12px 80px !important;
   }
   .products-grid-editorial {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-    max-width: 440px !important;
-    margin: 0 auto 50px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px 10px !important;
+    max-width: 100% !important;
+    margin: 0 auto 40px !important;
+  }
+  .editorial-card {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+  }
+  .editorial-card-img-wrap {
+    aspect-ratio: 3/4 !important;
+    background: #fbf9f6 !important;
+  }
+  .editorial-card-img-wrap img {
+    object-fit: contain !important;
+  }
+  .editorial-card-badge {
+    top: 6px !important;
+    left: 6px !important;
+    font-size: 0.5rem !important;
+    padding: 2px 6px !important;
+    letter-spacing: 0.06em !important;
+    border-radius: 4px !important;
+    line-height: 1.2 !important;
   }
   .editorial-card-info {
-    padding: 16px !important;
+    padding: 10px 8px 12px !important;
+  }
+  .editorial-meta-sub {
+    font-size: 0.58rem !important;
+    margin-bottom: 4px !important;
+    letter-spacing: 0.06em !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .editorial-meta-sub span:last-child {
+    font-size: 0.52rem !important;
   }
   .editorial-card-title {
-    font-size: 1.35rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.2em;
+  }
+  .editorial-price-row {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 4px 6px !important;
+    margin-top: auto !important;
+    margin-bottom: 8px !important;
+    flex-wrap: wrap !important;
   }
   .editorial-price {
-    font-size: 1.15rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
   }
-  .btn-card-add-cart {
-    padding: 14px 0 !important;
-    font-size: 0.78rem !important;
+  .editorial-orig-price {
+    font-size: 0.7rem !important;
+  }
+  .editorial-price-row span:last-child {
+    font-size: 0.55rem !important;
+  }
+  .btn-card-add-cart,
+  .editorial-card .btn-classy {
+    padding: 8px 4px !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.06em !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
   /* Mobile Hero Section & Banners */
   .hero-glassmorphism-section {
     min-height: 72vh !important;
-    padding: 40px 16px !important;
+    padding: 70px 16px 28px !important;
+    align-items: flex-end !important;
   }
   .glassmorphism-card {
-    padding: 32px 18px !important;
+    padding: 24px 16px 20px !important;
   }
   .hero-main-title {
-    font-size: 2.3rem !important;
+    font-size: 2.1rem !important;
     line-height: 1.15 !important;
+    margin-bottom: 12px !important;
   }
   .hero-lead-text {
-    font-size: 0.9rem !important;
-    margin-bottom: 24px !important;
+    font-size: 0.88rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
   }
   .hero-cta-buttons {
     flex-direction: column !important;
@@ -986,3 +1052,44 @@ select#catalog-sort-select:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* Quick View Image & Full Photo Display Rules */
+#qv-img {
+  width: 100%;
+  max-height: 480px;
+  aspect-ratio: 3/4;
+  object-fit: contain !important;
+  background: #faf8f5;
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.theme-noir-custom .editorial-card-img-wrap {
+  background: #09090c !important;
+}
+
+/* Extra Small Mobile Screens (<= 400px) */
+@media (max-width: 400px) {
+  main {
+    padding: 14px 8px 80px !important;
+  }
+  .products-grid-editorial {
+    gap: 10px 8px !important;
+  }
+  .editorial-card-info {
+    padding: 8px 6px 10px !important;
+  }
+  .editorial-card-title {
+    font-size: 0.82rem !important;
+  }
+  .editorial-price {
+    font-size: 0.82rem !important;
+  }
+  .btn-card-add-cart,
+  .editorial-card .btn-classy {
+    font-size: 0.6rem !important;
+    padding: 7px 2px !important;
+  }
+}
+

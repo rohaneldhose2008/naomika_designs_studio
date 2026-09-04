@@ -330,7 +330,7 @@ function renderCartUI() {
     const row = document.createElement('div');
     row.style.cssText = 'display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.06); align-items: center;';
     row.innerHTML = `
-      <img src="${item.image}" style="width: 58px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-gold);" onerror="this.src='images/1.jpeg'"/>
+      <img src="${item.image}" style="width: 58px; height: 75px; object-fit: contain; background: #faf8f5; border-radius: 6px; border: 1px solid var(--border-gold);" onerror="this.src='images/1.jpeg'"/>
       <div style="flex: 1;">
         <h4 style="font-family: var(--font-editorial); font-size: 1.05rem; font-weight: 600; line-height: 1.2; margin-bottom: 3px;">${item.name}</h4>
         <div style="font-size: 0.72rem; color: var(--gold-burnished); font-weight: 500;">Size: ${item.size} • <span style="font-family: monospace; color: #888;">${item.code}</span></div>
@@ -369,7 +369,7 @@ function openCheckoutModal() {
       const card = document.createElement('div');
       card.style.cssText = 'display: flex; gap: 18px; padding: 16px; background: var(--bg-cream); border: 1px solid var(--border-gold); border-radius: 12px; margin-bottom: 12px; align-items: center;';
       card.innerHTML = `
-        <img src="${item.image}" style="width: 80px; height: 104px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.08);" onerror="this.src='images/1.jpeg'"/>
+        <img src="${item.image}" style="width: 80px; height: 104px; object-fit: contain; background: #faf8f5; border-radius: 8px; border: 1px solid var(--border-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.08);" onerror="this.src='images/1.jpeg'"/>
         <div style="flex: 1;">
           <span style="font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold-burnished); font-weight: 600;">${item.category}</span>
           <h4 style="font-family: var(--font-editorial); font-size: 1.3rem; font-weight: 600; color: var(--text-charcoal); margin: 2px 0 6px;">${item.name}</h4>
