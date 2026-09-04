@@ -16,17 +16,19 @@
 </head>
 <body class="theme-noir-custom">
 
-  <!-- Noir Navigation Header -->
+  <!-- Navigation Header -->
   <header class="header-wrap">
     <div class="header-inner">
-      <a href="index.html" class="brand-center-logo">
-        <img src="images/logo.png" alt="Naomika Logo" onerror="this.src='images/1.jpeg'"/>
-        <div class="brand-text-block">
-          <span class="brand-title-lg">Naomika</span>
-          <span class="brand-tag-sm" style="color: var(--gold-soft);">Design Studio</span>
+      <!-- Left: Logo & Brand Stack -->
+      <a href="index.html" class="brand-left-block">
+        <img src="images/logo.png" alt="Naomika" onerror="this.src='images/1.jpeg'"/>
+        <div class="brand-text-stack">
+          <span class="brand-name-top">Naomika</span>
+          <span class="brand-desc-down" style="color: var(--gold-soft);">Design Studio</span>
         </div>
       </a>
 
+      <!-- Center: Centralized to Whole Page -->
       <nav class="nav-editorial-links">
         <a href="index.html">Home</a>
         <a href="ladies-wear.html">Ladies Wear</a>
@@ -34,10 +36,25 @@
         <a href="customization.html" class="active">Customization</a>
       </nav>
 
+      <!-- Right: Search Bar on Desktop & Search Icon on Mobile -->
       <div class="header-right-tools">
-        <button onclick="openCustomModal('NDS-CU-BESPOKE')" class="btn-classy" style="background: var(--gold-antique); color: #fff; padding: 9px 20px; font-size: 0.72rem;">
-          Book Consultation
+        <div class="header-search-bar">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="top-search-input" placeholder="Search bespoke gowns, couture..." autocomplete="off"/>
+        </div>
+
+        <button type="button" class="mobile-search-toggle-btn" onclick="toggleMobileSearch()" aria-label="Search">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
+      </div>
+    </div>
+
+    <!-- Mobile Collapsible Search Drawer -->
+    <div id="mobile-search-drawer" class="mobile-search-drawer">
+      <div class="mobile-search-inner">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="top-search-input" placeholder="Search bespoke gowns, couture..."/>
+        <button type="button" class="mobile-search-close-btn" onclick="toggleMobileSearch()">&times;</button>
       </div>
     </div>
   </header>
@@ -64,10 +81,6 @@
         <p style="font-size: 0.82rem; color: #a1a1aa;">Tap any creation below to inspect details and schedule a bespoke fitting consultation.</p>
       </div>
 
-      <div class="filter-search-editorial">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="custom-search-input" placeholder="Search bespoke gowns, couture..."/>
-      </div>
     </div>
 
     <!-- Target Grid for Made-to-Order Creations -->

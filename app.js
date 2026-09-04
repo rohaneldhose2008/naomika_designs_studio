@@ -170,25 +170,43 @@ function setupFilterEvents() {
     });
   }
 
-  const search = document.getElementById('catalog-search-input');
-  if (search) {
-    search.addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase().trim();
-      filteredProducts = allProducts.filter(item => {
-        if (currentCategory !== 'all') {
-          if (item.category.toLowerCase() !== currentCategory.toLowerCase()) return false;
-        }
-        if (!q) return true;
-        return item.name.toLowerCase().includes(q) ||
-               item.code.toLowerCase().includes(q) ||
-               (item.subcategory || '').toLowerCase().includes(q);
-      });
-      if (currentCategory === 'all') filteredProducts = filteredProducts.slice(0, 50);
-      displayedCount = 0;
-      const grid = document.getElementById('products-grid-target');
-      if (grid) grid.innerHTML = '';
-      renderNextBatch();
+  const handleGlobalSearch = (val) => {
+    const q = (val || '').toLowerCase().trim();
+    document.querySelectorAll('.top-search-input').forEach(inp => {
+      if (inp.value !== val) inp.value = val;
     });
+
+    filteredProducts = allProducts.filter(item => {
+      if (currentCategory !== 'all') {
+        if (item.category.toLowerCase() !== currentCategory.toLowerCase()) return false;
+      }
+      if (!q) return true;
+      return item.name.toLowerCase().includes(q) ||
+             item.code.toLowerCase().includes(q) ||
+             (item.subcategory || '').toLowerCase().includes(q);
+    });
+
+    if (currentCategory === 'all') filteredProducts = filteredProducts.slice(0, 50);
+    displayedCount = 0;
+    const grid = document.getElementById('products-grid-target');
+    if (grid) grid.innerHTML = '';
+    renderNextBatch();
+  };
+
+  document.querySelectorAll('.top-search-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      handleGlobalSearch(e.target.value);
+    });
+  });
+}
+
+function toggleMobileSearch() {
+  const drawer = document.getElementById('mobile-search-drawer');
+  if (!drawer) return;
+  drawer.classList.toggle('open');
+  if (drawer.classList.contains('open')) {
+    const inp = drawer.querySelector('.top-search-input');
+    if (inp) inp.focus();
   }
 }
 

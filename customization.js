@@ -34,12 +34,28 @@ function initCustomPortfolio() {
 }
 
 function setupSearchEvent() {
-  const searchInput = document.getElementById('custom-search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase().trim();
-      renderMadeToOrderGrid(q);
+  const handleCustomSearch = (val) => {
+    const q = (val || '').toLowerCase().trim();
+    document.querySelectorAll('.top-search-input').forEach(inp => {
+      if (inp.value !== val) inp.value = val;
     });
+    renderMadeToOrderGrid(q);
+  };
+
+  document.querySelectorAll('.top-search-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      handleCustomSearch(e.target.value);
+    });
+  });
+}
+
+function toggleMobileSearch() {
+  const drawer = document.getElementById('mobile-search-drawer');
+  if (!drawer) return;
+  drawer.classList.toggle('open');
+  if (drawer.classList.contains('open')) {
+    const inp = drawer.querySelector('.top-search-input');
+    if (inp) inp.focus();
   }
 }
 
