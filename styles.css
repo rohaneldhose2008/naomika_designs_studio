@@ -292,19 +292,19 @@ button {
 /* Authentic Naomika Designs Storefront Hero Section */
 .hero-glassmorphism-section {
   position: relative;
-  min-height: 85vh;
+  min-height: 95vh;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 90px 24px 44px;
+  padding: 220px 24px 40px;
   background: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(250, 248, 245, 0.35)),
-    url('images/hero_naomika_entrance.jpg') center/cover no-repeat;
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.15) 30%, rgba(250, 248, 245, 0.4) 100%),
+    url('images/hero_naomika_entrance.jpg') center top / cover no-repeat;
   border-bottom: 1px solid var(--border-hairline);
 }
 
 .glassmorphism-card {
-  max-width: 800px;
+  max-width: 680px;
   width: 100%;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.45);
@@ -313,7 +313,7 @@ button {
   border: 1.5px solid rgba(255, 255, 255, 0.75);
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.9);
   border-radius: 16px;
-  padding: 38px 36px 32px;
+  padding: 26px 32px 22px;
   text-align: center;
 }
 
@@ -331,17 +331,17 @@ button {
   text-transform: uppercase;
   color: var(--gold-burnished);
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .hero-main-title {
   font-family: var(--font-editorial);
-  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-size: clamp(2rem, 3.5vw, 2.9rem);
   font-weight: 600;
   color: #111113;
   line-height: 1.1;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   letter-spacing: -0.01em;
   text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
 }
@@ -352,11 +352,11 @@ button {
 }
 
 .hero-lead-text {
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   color: #1f1f23;
-  line-height: 1.8;
-  max-width: 620px;
-  margin: 0 auto 36px;
+  line-height: 1.6;
+  max-width: 560px;
+  margin: 0 auto 20px;
   font-weight: 400;
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.85);
 }
@@ -937,7 +937,7 @@ select#catalog-sort-select:focus {
   /* Mobile Hero Section with Custom Portrait Signboard Entrance */
   .hero-glassmorphism-section {
     min-height: 80vh !important;
-    padding: 175px 14px 28px !important;
+    padding: 195px 14px 24px !important;
     align-items: flex-end !important;
     background: 
       linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.15) 35%, rgba(250, 248, 245, 0.45) 100%),
