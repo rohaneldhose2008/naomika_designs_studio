@@ -934,14 +934,17 @@ select#catalog-sort-select:focus {
     text-overflow: ellipsis !important;
   }
 
-  /* Mobile Hero Section & Banners */
+  /* Mobile Hero Section with Custom Portrait Signboard Entrance */
   .hero-glassmorphism-section {
-    min-height: 72vh !important;
-    padding: 70px 16px 28px !important;
+    min-height: 84vh !important;
+    padding: 135px 16px 28px !important;
     align-items: flex-end !important;
+    background: 
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.22) 40%, rgba(250, 248, 245, 0.45) 100%),
+      url('images/hero_naomika_entrance_mobile.jpg') center top / cover no-repeat !important;
   }
   .glassmorphism-card {
-    padding: 24px 16px 20px !important;
+    padding: 22px 16px 18px !important;
   }
   .hero-main-title {
     font-size: 2.1rem !important;
