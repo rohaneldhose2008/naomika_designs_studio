@@ -1,6 +1,28 @@
 [
   {
     "id": 1,
+    "code": "P-201",
+    "name": "Hand painted Kerala Kasavu saree",
+    "category": "Ladies Wear",
+    "subcategory": "Kasavu Sarees",
+    "price": 4200,
+    "priceDisplay": "₹4,200",
+    "originalPrice": 4950,
+    "originalPriceDisplay": "₹4,950",
+    "image": "images/7_1788628563833-9707.png",
+    "image2": "images/7_1788628563833-9707.png",
+    "image3": "images/7_1788628563833-9707.png",
+    "images": [
+      "images/7_1788628563833-9707.png"
+    ],
+    "stockStatus": "Made to Order",
+    "badge": "Fresh Arrivals",
+    "tagline": "Fresh Arrivals",
+    "description": "NO RETURN",
+    "featured": true
+  },
+  {
+    "id": 2,
     "code": "NDS-MW-1001",
     "name": "Mens wear",
     "category": "Mens Wear",
@@ -22,7 +44,7 @@
     "featured": true
   },
   {
-    "id": 2,
+    "id": 3,
     "code": "NDS-CU-1001",
     "name": "Purple gown",
     "category": "Customization",
@@ -44,7 +66,7 @@
     "featured": true
   },
   {
-    "id": 3,
+    "id": 4,
     "code": "NDS-LW-1002",
     "name": "Ivory top and pant",
     "category": "Ladies Wear",
@@ -66,7 +88,7 @@
     "featured": true
   },
   {
-    "id": 4,
+    "id": 5,
     "code": "NDS-LW-1001",
     "name": "Red Co-Ord Sets",
     "category": "Customization",
