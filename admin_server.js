@@ -17,9 +17,33 @@ const fs = require('fs');
 const XLSX = require('xlsx');
 const { exec, execSync } = require('child_process');
 
+const BASE_DIR = __dirname;
+
+// Automatically load .env configuration if present
+const ENV_FILE = path.join(BASE_DIR, '.env');
+if (fs.existsSync(ENV_FILE)) {
+  try {
+    const envContent = fs.readFileSync(ENV_FILE, 'utf8');
+    envContent.split(/\r?\n/).forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const idx = trimmed.indexOf('=');
+        if (idx !== -1) {
+          const key = trimmed.slice(0, idx).trim();
+          const val = trimmed.slice(idx + 1).trim();
+          if (!process.env[key]) {
+            process.env[key] = val;
+          }
+        }
+      }
+    });
+  } catch (e) {
+    console.error('Error reading .env file:', e);
+  }
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BASE_DIR = __dirname;
 const XLSX_FILE = path.join(BASE_DIR, 'products.xlsx');
 const DATA_JSON = path.join(BASE_DIR, 'data', 'products.json');
 const DATA_JS = path.join(BASE_DIR, 'data', 'products.js');
@@ -127,6 +151,123 @@ app.post('/api/upload', upload.array('imageFiles', 10), (req, res) => {
     imagePath: uploadedPaths[0],
     filenames: req.files.map(f => f.filename)
   });
+});
+
+// API: AI Auto-Describe Product Photo via Gemini Vision API
+app.post('/api/ai-describe', async (req, res) => {
+  try {
+    const { imagePath, base64Data, mimeType } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(400).json({
+        success: false,
+        error: 'Gemini API key is not configured in .env. Please set GEMINI_API_KEY.'
+      });
+    }
+
+    let b64 = base64Data;
+    let mime = mimeType || 'image/jpeg';
+
+    if (!b64 && imagePath) {
+      const sanitized = imagePath.replace(/^[/\\]+/, '');
+      const fullPath = path.join(BASE_DIR, sanitized);
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).json({ success: false, error: `Image file not found: ${imagePath}` });
+      }
+      const ext = path.extname(fullPath).toLowerCase();
+      if (ext === '.png') mime = 'image/png';
+      else if (ext === '.webp') mime = 'image/webp';
+      else mime = 'image/jpeg';
+
+      b64 = fs.readFileSync(fullPath).toString('base64');
+    }
+
+    if (!b64) {
+      return res.status(400).json({ success: false, error: 'No image provided for AI analysis' });
+    }
+
+    const promptText = `You are the head fashion curator and copywriter for Naomika Design Studio, an exclusive luxury designer boutique in Trivandrum, Kerala specializing in bespoke couture, bridal sarees, kasavu drapes, festive kurtas, and custom tailoring.
+Analyze this product image carefully. Provide an authentic, high-end boutique catalog entry in JSON format with these exact keys:
+1. "title": 3 to 6 elegant boutique words capturing the silhouette, fabric, or craftsmanship (e.g. "Ivory Kasavu Embroidered Anarkali", "Royal Emerald Raw Silk Kurta Set", "Pastel Hand-Embellished Organza Saree").
+2. "category": Must be strictly one of these three exact values: "Ladies Wear", "Mens Wear", or "Customization". (Categorize women's sarees/anarkalis/gowns as "Ladies Wear", men's jubbas/kurtas/mundu as "Mens Wear", bespoke patterns/fabric cuts as "Customization").
+3. "badge": A luxury boutique badge (e.g. "Fresh Arrivals", "Handcrafted Couture", "Bespoke Creation", "Festive Edit", "Bridal Heritage").
+4. "description": 2 to 3 sentences of poetic, captivating boutique copy detailing the fabric, silhouette, embroidery/zari work, craftsmanship, and suitable festive or wedding occasions.`;
+
+    const payload = {
+      contents: [
+        {
+          parts: [
+            { text: promptText },
+            {
+              inline_data: {
+                mime_type: mime,
+                data: b64
+              }
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        response_mime_type: 'application/json',
+        temperature: 0.4
+      }
+    };
+
+    const modelsToTry = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+    let lastError = null;
+    let resultJson = null;
+
+    for (const model of modelsToTry) {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+          const rawText = data.candidates[0].content.parts[0].text;
+          resultJson = JSON.parse(rawText);
+          break;
+        } else if (data.error) {
+          lastError = data.error.message;
+        }
+      } catch (err) {
+        lastError = err.message;
+      }
+    }
+
+    if (!resultJson) {
+      return res.status(500).json({
+        success: false,
+        error: lastError || 'Failed to generate description from Gemini'
+      });
+    }
+
+    const validCategories = ['Ladies Wear', 'Mens Wear', 'Customization'];
+    let category = resultJson.category || 'Ladies Wear';
+    if (!validCategories.includes(category)) {
+      const lower = category.toLowerCase();
+      if (lower.includes('men')) category = 'Mens Wear';
+      else if (lower.includes('custom') || lower.includes('bespoke')) category = 'Customization';
+      else category = 'Ladies Wear';
+    }
+
+    res.json({
+      success: true,
+      data: {
+        title: resultJson.title || 'Handcrafted Boutique Creation',
+        category: category,
+        badge: resultJson.badge || 'Fresh Arrivals',
+        description: resultJson.description || 'Exclusive designer creation handcrafted with pure artisanal finesse by Naomika Design Studio.'
+      }
+    });
+  } catch (err) {
+    console.error('AI describe error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // API: Add or Update Product (Supports 3 Photos)

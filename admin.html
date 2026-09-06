@@ -85,6 +85,23 @@
             <!-- 3 Image Previews Grid -->
             <div id="image-previews-grid" class="mt-2 grid grid-cols-3 gap-2"></div>
           </div>
+
+          <!-- Gemini AI Vision Auto-Describe Banner / Trigger -->
+          <div id="ai-assist-box" class="mt-2.5 p-3 rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 via-rose-50/30 to-amber-50 flex items-center justify-between gap-3 shadow-xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="text-xl shrink-0">✨</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <p class="font-bold text-slate-800 text-[11px] tracking-wide">Gemini AI Curator</p>
+                  <span class="px-1.5 py-0.2 bg-amber-200/60 text-amber-900 rounded text-[9px] font-semibold">Auto-Fill</span>
+                </div>
+                <p id="ai-status-text" class="text-[10px] text-slate-500 truncate">Drop a creation photo to auto-generate title, category & luxury description</p>
+              </div>
+            </div>
+            <button type="button" id="ai-describe-btn" onclick="triggerAiDescribeManual()" class="shrink-0 px-3 py-1.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center gap-1.5">
+              <span>✨ Auto-Fill</span>
+            </button>
+          </div>
         </div>
 
         <!-- Product Name -->
@@ -142,9 +159,14 @@
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px]">Creation Description</label>
-            <span id="desc-priority-badge" class="hidden text-[9px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-300">
-              ★ Essential for Made-to-Order
-            </span>
+            <div class="flex items-center gap-1.5">
+              <span id="desc-priority-badge" class="hidden text-[9px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-300">
+                ★ Essential for Made-to-Order
+              </span>
+              <button type="button" onclick="triggerAiDescribeManual(true)" class="text-[10px] text-amber-700 hover:text-amber-800 font-semibold flex items-center gap-1 hover:underline" title="Auto-fill or regenerate description using AI">
+                <span>✨ AI Describe</span>
+              </button>
+            </div>
           </div>
           <textarea id="prod-desc" rows="3" placeholder="Handcrafted in Trivandrum with authentic pure kasavu zari..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
         </div>
@@ -388,12 +410,18 @@
       .then(res => res.json())
       .then(data => {
         if (data.success && data.imagePaths) {
+          const wasEmpty = currentUploadedImages.length === 0;
           data.imagePaths.forEach(path => {
             if (currentUploadedImages.length < 3) {
               currentUploadedImages.push(path);
             }
           });
           renderImagePreviews();
+
+          // Automatically trigger Gemini AI Auto-Describe when photo is dropped/selected!
+          if (wasEmpty && currentUploadedImages.length > 0) {
+            runAiDescribe(currentUploadedImages[0]);
+          }
         } else {
           alert('Upload failed: ' + (data.error || 'Unknown error'));
           resetUploadPrompt();
@@ -453,6 +481,96 @@
         <p class="text-xs font-semibold text-slate-800">Drag & drop up to 3 photos here, or <span class="text-amber-700 underline">browse files</span></p>
         <p class="text-[10px] text-slate-500">Accepts photos dragged directly from WhatsApp, Desktop, or Camera</p>
       `;
+    }
+
+    // Gemini Vision AI Auto-Fill & Describe Engine
+    let isAiGenerating = false;
+
+    async function triggerAiDescribeManual(force = true) {
+      if (currentUploadedImages.length === 0) {
+        alert('Please drag, drop, or select at least one photo first.');
+        return;
+      }
+      runAiDescribe(currentUploadedImages[0], force);
+    }
+
+    async function runAiDescribe(imagePath, force = false) {
+      if (isAiGenerating || !imagePath) return;
+
+      const aiBtn = document.getElementById('ai-describe-btn');
+      const statusText = document.getElementById('ai-status-text');
+
+      isAiGenerating = true;
+      if (aiBtn) {
+        aiBtn.disabled = true;
+        aiBtn.innerHTML = `<span class="inline-block animate-spin">⏳</span> Analyzing...`;
+        aiBtn.classList.add('opacity-75');
+      }
+      if (statusText) {
+        statusText.innerHTML = `<span class="text-amber-700 font-semibold animate-pulse">✨ Analyzing creation with Gemini AI...</span>`;
+      }
+
+      try {
+        const res = await fetch('/api/ai-describe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imagePath: imagePath })
+        });
+
+        const json = await res.json();
+        if (json.success && json.data) {
+          const { title, category, badge, description } = json.data;
+
+          const nameEl = document.getElementById('prod-name');
+          const catEl = document.getElementById('prod-category');
+          const badgeEl = document.getElementById('prod-badge');
+          const descEl = document.getElementById('prod-desc');
+
+          // Populate Title if empty or forced
+          if (title && (force || !nameEl.value || nameEl.value.trim() === '')) {
+            nameEl.value = title;
+          }
+
+          // Populate Category
+          if (category && (force || catEl.value === 'Ladies Wear')) {
+            catEl.value = category;
+            checkCustomDescriptionPriority();
+          }
+
+          // Populate Badge
+          if (badge && (force || !badgeEl.value || badgeEl.value === 'Fresh Arrivals')) {
+            badgeEl.value = badge;
+          }
+
+          // Populate Description
+          if (description && (force || !descEl.value || descEl.value.trim() === '')) {
+            descEl.value = description;
+          }
+
+          if (statusText) {
+            statusText.innerHTML = `<span class="text-emerald-700 font-semibold">✓ Auto-filled luxury title, category & boutique description!</span>`;
+            setTimeout(() => {
+              if (statusText) statusText.innerText = 'Creation analyzed by Gemini AI. Click to regenerate anytime.';
+            }, 4500);
+          }
+        } else {
+          if (statusText) {
+            statusText.innerHTML = `<span class="text-rose-600 font-medium">AI note: ${json.error || 'Could not analyze photo'}</span>`;
+          }
+        }
+      } catch (err) {
+        console.error('AI Describe Error:', err);
+        if (statusText) {
+          statusText.innerHTML = `<span class="text-rose-600 font-medium">AI connection error: ${err.message}</span>`;
+        }
+      } finally {
+        isAiGenerating = false;
+        if (aiBtn) {
+          aiBtn.disabled = false;
+          aiBtn.innerHTML = `<span>✨ Auto-Fill</span>`;
+          aiBtn.classList.remove('opacity-75');
+        }
+      }
     }
 
     function checkCustomDescriptionPriority() {
@@ -540,6 +658,8 @@
       renderImagePreviews();
       document.getElementById('prod-code').value = generateNextProductCode();
       checkCustomDescriptionPriority();
+      const statusText = document.getElementById('ai-status-text');
+      if (statusText) statusText.innerText = 'Drop a creation photo to auto-generate title, category & luxury description';
     }
 
     function handleFormSubmit(event) {
