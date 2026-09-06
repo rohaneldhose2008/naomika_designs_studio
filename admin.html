@@ -247,20 +247,20 @@
           </div>
         </div>
 
-        <div class="overflow-x-auto max-h-[680px]">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px] sticky top-0 z-10">
+        <div class="overflow-x-auto max-h-[680px] rounded-xl border border-slate-200">
+          <table class="w-full text-left text-xs min-w-[680px] divide-y divide-slate-200">
+            <thead class="bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[10px] sticky top-0 z-10">
               <tr>
-                <th class="p-3">Preview</th>
-                <th class="p-3">Code</th>
-                <th class="p-3">Title</th>
-                <th class="p-3">Category</th>
-                <th class="p-3 text-right">Price</th>
-                <th class="p-3 text-center">Stock</th>
-                <th class="p-3 text-center">Actions</th>
+                <th class="p-3 whitespace-nowrap">Preview</th>
+                <th class="p-3 whitespace-nowrap">Code</th>
+                <th class="p-3 whitespace-nowrap min-w-[180px]">Title & Sizes</th>
+                <th class="p-3 whitespace-nowrap">Category</th>
+                <th class="p-3 whitespace-nowrap text-right">Price</th>
+                <th class="p-3 whitespace-nowrap text-center">Stock</th>
+                <th class="p-3 whitespace-nowrap text-center">Actions</th>
               </tr>
             </thead>
-            <tbody id="admin-table-body" class="divide-y divide-slate-100">
+            <tbody id="admin-table-body" class="divide-y divide-slate-100 bg-white">
               <!-- Dynamically rendered -->
             </tbody>
           </table>
@@ -335,28 +335,28 @@
         tr.className = 'hover:bg-slate-50 transition-colors';
         const imgCount = (p.images && p.images.length > 0) ? p.images.length : (p.image2 ? 2 : 1);
         tr.innerHTML = `
-          <td class="p-3">
-            <div class="relative w-9 h-11">
-              <img src="${p.image}" class="w-9 h-11 object-contain bg-slate-50 rounded border border-slate-200" onerror="this.src='images/1.jpeg'"/>
-              ${imgCount > 1 ? `<span class="absolute -bottom-1 -right-1 bg-amber-600 text-white rounded-full text-[9px] px-1 font-bold">${imgCount}</span>` : ''}
+          <td class="p-3 whitespace-nowrap">
+            <div class="relative w-11 h-14 shrink-0 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shadow-xs">
+              <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='images/1.jpeg'"/>
+              ${imgCount > 1 ? `<span class="absolute bottom-0.5 right-0.5 bg-amber-600 text-white rounded-full text-[8px] px-1 font-bold leading-tight shadow">${imgCount}</span>` : ''}
             </div>
           </td>
-          <td class="p-3 font-mono font-bold text-slate-700">${p.code}</td>
-          <td class="p-3">
-            <div class="font-medium text-slate-900 max-w-[170px] truncate" title="${p.name}">${p.name}</div>
-            ${p.sizes && p.sizes.length > 0 ? `<div class="text-[9px] text-amber-800 font-mono mt-0.5">Sizes: ${Array.isArray(p.sizes) ? p.sizes.join(', ') : p.sizes}</div>` : ''}
+          <td class="p-3 whitespace-nowrap font-mono font-bold text-slate-800 text-xs">${p.code}</td>
+          <td class="p-3 min-w-[180px]">
+            <div class="font-semibold text-slate-900 max-w-[180px] truncate" title="${p.name}">${p.name}</div>
+            ${p.sizes && p.sizes.length > 0 ? `<div class="text-[9px] text-amber-800 font-mono mt-0.5 tracking-tight font-medium">Sizes: ${Array.isArray(p.sizes) ? p.sizes.join(', ') : p.sizes}</div>` : ''}
           </td>
-          <td class="p-3 text-slate-600">${p.category}</td>
-          <td class="p-3 text-right font-semibold text-slate-900">${p.priceDisplay}</td>
-          <td class="p-3 text-center">
-            <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${p.stockStatus === 'In Stock' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${p.stockStatus || 'In Stock'}</span>
+          <td class="p-3 whitespace-nowrap text-slate-600 text-xs font-medium">${p.category}</td>
+          <td class="p-3 whitespace-nowrap text-right font-bold text-slate-900 text-xs">${p.priceDisplay}</td>
+          <td class="p-3 whitespace-nowrap text-center">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide ${p.stockStatus === 'In Stock' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${p.stockStatus || 'In Stock'}</span>
           </td>
-          <td class="p-3 text-center">
+          <td class="p-3 whitespace-nowrap text-center">
             <div class="flex items-center justify-center gap-1.5">
-              <button onclick="editProduct('${p.code}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded text-[10px] shadow-sm transition-all">
+              <button onclick="editProduct('${p.code}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-md text-[10px] uppercase tracking-wider shadow-sm transition-all">
                 Edit
               </button>
-              <button onclick="deleteProduct('${p.code}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-[10px] shadow-sm transition-all">
+              <button onclick="deleteProduct('${p.code}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-md text-[10px] uppercase tracking-wider shadow-sm transition-all">
                 Delete
               </button>
             </div>
