@@ -1,10 +1,9 @@
 [
   {
-    "id": 11,
+    "id": 1,
     "code": "P211",
     "name": "Crimson Gold Embellished Bridal Lehenga",
     "category": "Ladies Wear",
-    "subcategory": "Designer Wear",
     "price": 25000,
     "priceDisplay": "₹25,000",
     "originalPrice": 0,
@@ -28,11 +27,10 @@
     "featured": true
   },
   {
-    "id": 10,
+    "id": 2,
     "code": "P210",
     "name": "Royal Blue Brocade Halter Blouse",
     "category": "Ladies Wear",
-    "subcategory": "Designer Wear",
     "price": 4500,
     "priceDisplay": "₹4,500",
     "originalPrice": 0,
@@ -56,15 +54,20 @@
     "featured": true
   },
   {
-    "id": 9,
+    "id": 3,
     "code": "P209",
     "name": "Ivory Kasavu Striped Kurta Mundu Set",
     "category": "Mens Wear",
-    "subcategory": "Designer Wear",
     "price": 3500,
     "priceDisplay": "₹3,500",
     "originalPrice": 0,
     "originalPriceDisplay": "",
+    "sizes": [
+      "38 (S)",
+      "40 (M)",
+      "42 (L)",
+      "44 (XL)"
+    ],
     "image": "images/8_1788721559495-2695.png",
     "image2": "images/8_1788721559495-2695.png",
     "image3": "images/8_1788721559495-2695.png",
@@ -74,11 +77,11 @@
     "stockStatus": "In Stock",
     "badge": "Festive Edit",
     "tagline": "Festive Edit",
-    "description": "Imbued with understated elegance, this pristine off-white kurta features delicate vertical gold kasavu zari stripes for a refined festive charm. Paired impeccably with a traditional golden zari-bordered mundu, this ensemble honors Kerala's rich sartorial heritage with contemporary elegance. Perfect for Onam celebrations, traditional wedding ceremonies, and auspicious festive rituals.",
+    "description": "Imbued with understated elegance, this pristine off-white kurta features delicate vertical gold kasavu zari stripes for a refined festive charm. Paired impeccably with a traditional golden zari-bordered mundu, this ensemble honors Kerala's rich sartorial heritage with contemporary elegance. Perfect for Onam celebrations, traditional wedding ceremonies, and auspicious festive rituals.\n\nNote: No Return Policy.",
     "featured": true
   },
   {
-    "id": 1,
+    "id": 4,
     "code": "P208",
     "name": "Ivory Floral Hand-Painted Kasavu Saree",
     "category": "Ladies Wear",
@@ -105,7 +108,7 @@
     "featured": true
   },
   {
-    "id": 2,
+    "id": 5,
     "code": "P207",
     "name": "Ivory Kasavu Embroidered Corset Gown",
     "category": "Customization",
@@ -129,7 +132,7 @@
     "featured": true
   },
   {
-    "id": 3,
+    "id": 6,
     "code": "P206",
     "name": "Scarlet Embroidered Organza Fusion Set",
     "category": "Ladies Wear",
@@ -156,7 +159,7 @@
     "featured": true
   },
   {
-    "id": 4,
+    "id": 7,
     "code": "P201",
     "name": "Hand painted Kerala Kasavu saree",
     "category": "Ladies Wear",
@@ -183,7 +186,7 @@
     "featured": true
   },
   {
-    "id": 5,
+    "id": 8,
     "code": "P202",
     "name": "Mens wear",
     "category": "Mens Wear",
@@ -210,7 +213,7 @@
     "featured": true
   },
   {
-    "id": 6,
+    "id": 9,
     "code": "P203",
     "name": "Purple gown",
     "category": "Customization",
@@ -234,7 +237,7 @@
     "featured": true
   },
   {
-    "id": 7,
+    "id": 10,
     "code": "P204",
     "name": "Ivory top and pant",
     "category": "Ladies Wear",
@@ -261,7 +264,7 @@
     "featured": true
   },
   {
-    "id": 8,
+    "id": 11,
     "code": "P205",
     "name": "MODAL SLIK KAFTAN",
     "category": "Customization",
