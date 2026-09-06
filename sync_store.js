@@ -110,8 +110,23 @@ function syncStore() {
 
         const stock = String(row['Stock Status'] || 'In Stock').trim();
         const badge = String(row['Badge'] || row['Tagline'] || 'Fresh Arrivals').trim();
-        const desc = String(row['Description'] || 'Handcrafted designer creation by Naomika Design Studio. Bespoke cut, premium fabric, and master craftsmanship.').trim();
+        let desc = String(row['Description'] || 'Handcrafted designer creation by Naomika Design Studio. Bespoke cut, premium fabric, and master craftsmanship.').trim();
+        if (!/no\s*return\s*policy/i.test(desc)) {
+            desc = desc + '\n\nNote: No Return Policy.';
+        }
         const featured = String(row['Featured'] || 'No').trim().toLowerCase() === 'yes';
+
+        // Parse Sizes
+        const rawSizes = row['Sizes'] || row['Available Sizes'] || '';
+        let sizes = [];
+        if (typeof rawSizes === 'string' && rawSizes.trim()) {
+            sizes = rawSizes.split(',').map(s => s.trim()).filter(Boolean);
+        }
+        if (sizes.length === 0) {
+            if (category === 'Ladies Wear') sizes = ['S', 'M', 'L', 'XL'];
+            else if (category === 'Mens Wear') sizes = ['38 (S)', '40 (M)', '42 (L)', '44 (XL)'];
+            else sizes = ['Custom Fit'];
+        }
 
         products.push({
             id: idx + 1,
@@ -122,6 +137,7 @@ function syncStore() {
             priceDisplay: priceNum > 0 ? `₹${priceNum.toLocaleString('en-IN')}` : 'Bespoke / On Request',
             originalPrice: origPrice,
             originalPriceDisplay: origPrice > 0 ? `₹${origPrice.toLocaleString('en-IN')}` : '',
+            sizes: sizes,
             image: img1,
             image2: img2 || img1,
             image3: img3 || img1,

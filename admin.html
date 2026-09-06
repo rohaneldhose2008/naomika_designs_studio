@@ -126,6 +126,28 @@
           </div>
         </div>
 
+        <!-- Size Selecting Option (Visible for Ladies Wear & Mens Wear) -->
+        <div id="size-selection-block" class="p-3 bg-amber-50/50 border border-amber-200/90 rounded-xl space-y-2">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <label class="block font-bold text-slate-800 uppercase tracking-wider text-[10px]">
+                Available Sizes (<span id="size-cat-label" class="text-amber-800">Ladies Wear</span>) *
+              </label>
+              <span class="text-[9px] bg-amber-200/70 text-amber-900 px-1.5 py-0.2 rounded font-bold">LW / MW</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-[10px]">
+              <button type="button" onclick="selectAllSizes(true)" class="text-amber-800 font-bold hover:underline">Select All</button>
+              <span class="text-slate-300">|</span>
+              <button type="button" onclick="selectAllSizes(false)" class="text-slate-500 font-medium hover:underline">Clear</button>
+            </div>
+          </div>
+
+          <!-- Clickable Size Pills -->
+          <div id="size-pills-container" class="flex flex-wrap gap-1.5"></div>
+          
+          <p class="text-[10px] text-slate-500 italic">Tap size pills to toggle availability for this boutique creation.</p>
+        </div>
+
         <!-- Badge Tag -->
         <div>
           <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Badge Tag</label>
@@ -168,7 +190,10 @@
               </button>
             </div>
           </div>
-          <textarea id="prod-desc" rows="3" placeholder="Handcrafted in Trivandrum with authentic pure kasavu zari..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+          <textarea id="prod-desc" rows="3" placeholder="Handcrafted in Trivandrum with authentic pure kasavu zari... Note: No Return Policy." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+          <div class="mt-1 flex items-center gap-1 text-[10px] text-amber-800 font-medium">
+            <span>📌</span> <span>Studio Policy: <strong>Note: No Return Policy.</strong> will be preserved on all creations.</span>
+          </div>
         </div>
 
         <!-- Save Button -->
@@ -252,8 +277,14 @@
     let isEditingMode = false;
     let currentUploadedImages = []; // Stores up to 3 image paths
 
+    // Size Selection Options for Ladies Wear (LW) and Mens Wear (MW)
+    const SIZES_LADIES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Free Size', 'Custom Fit'];
+    const SIZES_MENS = ['38 (S)', '40 (M)', '42 (L)', '44 (XL)', '46 (XXL)', 'Free Size', 'Custom Fit'];
+    let selectedSizes = ['S', 'M', 'L', 'XL'];
+
     document.addEventListener('DOMContentLoaded', () => {
       setupDragAndDrop();
+      renderSizePills();
       loadAdminData();
     });
 
@@ -311,7 +342,10 @@
             </div>
           </td>
           <td class="p-3 font-mono font-bold text-slate-700">${p.code}</td>
-          <td class="p-3 font-medium text-slate-900 max-w-[160px] truncate" title="${p.name}">${p.name}</td>
+          <td class="p-3">
+            <div class="font-medium text-slate-900 max-w-[170px] truncate" title="${p.name}">${p.name}</div>
+            ${p.sizes && p.sizes.length > 0 ? `<div class="text-[9px] text-amber-800 font-mono mt-0.5">Sizes: ${Array.isArray(p.sizes) ? p.sizes.join(', ') : p.sizes}</div>` : ''}
+          </td>
           <td class="p-3 text-slate-600">${p.category}</td>
           <td class="p-3 text-right font-semibold text-slate-900">${p.priceDisplay}</td>
           <td class="p-3 text-center">
@@ -573,6 +607,63 @@
       }
     }
 
+    // Size Selection Logic for LW and MW
+    function renderSizePills() {
+      const cat = document.getElementById('prod-category').value;
+      const block = document.getElementById('size-selection-block');
+      const container = document.getElementById('size-pills-container');
+      const catLabel = document.getElementById('size-cat-label');
+      if (!block || !container) return;
+
+      if (cat === 'Customization') {
+        block.classList.add('hidden');
+        selectedSizes = ['Custom Fit'];
+        return;
+      }
+
+      block.classList.remove('hidden');
+      if (catLabel) catLabel.innerText = cat;
+
+      const available = (cat === 'Mens Wear') ? SIZES_MENS : SIZES_LADIES;
+      container.innerHTML = '';
+
+      available.forEach(sz => {
+        const isSelected = selectedSizes.includes(sz);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = (e) => {
+          e.preventDefault();
+          toggleSizePill(sz);
+        };
+        btn.className = isSelected
+          ? 'px-2.5 py-1 text-[11px] font-bold rounded-lg border border-amber-600 bg-amber-600 text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer'
+          : 'px-2.5 py-1 text-[11px] font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:border-amber-400 hover:text-amber-800 transition-all cursor-pointer';
+        btn.innerHTML = `${isSelected ? '✓ ' : ''}${sz}`;
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleSizePill(sz) {
+      const idx = selectedSizes.indexOf(sz);
+      if (idx >= 0) {
+        selectedSizes.splice(idx, 1);
+      } else {
+        selectedSizes.push(sz);
+      }
+      renderSizePills();
+    }
+
+    function selectAllSizes(selectAll) {
+      const cat = document.getElementById('prod-category').value;
+      const available = (cat === 'Mens Wear') ? SIZES_MENS : SIZES_LADIES;
+      if (selectAll) {
+        selectedSizes = [...available];
+      } else {
+        selectedSizes = [];
+      }
+      renderSizePills();
+    }
+
     function checkCustomDescriptionPriority() {
       const cat = document.getElementById('prod-category').value;
       const stock = document.getElementById('prod-stock').value;
@@ -581,11 +672,11 @@
 
       if (cat === 'Customization' || stock === 'Made to Order') {
         badge.classList.remove('hidden');
-        descTextarea.placeholder = "Please enter detailed measurements, fabric composition, embroidery work, and styling specifics (essential for Made-to-Order couture)...";
+        descTextarea.placeholder = "Please enter detailed measurements, fabric composition, embroidery work, and styling specifics (essential for Made-to-Order couture)... Note: No Return Policy.";
         descTextarea.classList.add('border-amber-400');
       } else {
         badge.classList.add('hidden');
-        descTextarea.placeholder = "Handcrafted in Trivandrum with authentic pure kasavu zari...";
+        descTextarea.placeholder = "Handcrafted in Trivandrum with authentic pure kasavu zari... Note: No Return Policy.";
         descTextarea.classList.remove('border-amber-400');
       }
     }
@@ -607,9 +698,18 @@
     function handleCategoryChange() {
       checkCustomDescriptionPriority();
 
-      if (isEditingMode) return;
-
-      document.getElementById('prod-code').value = generateNextProductCode();
+      const cat = document.getElementById('prod-category').value;
+      if (!isEditingMode) {
+        if (cat === 'Mens Wear') {
+          selectedSizes = ['38 (S)', '40 (M)', '42 (L)', '44 (XL)'];
+        } else if (cat === 'Ladies Wear') {
+          selectedSizes = ['S', 'M', 'L', 'XL'];
+        } else {
+          selectedSizes = ['Custom Fit'];
+        }
+        document.getElementById('prod-code').value = generateNextProductCode();
+      }
+      renderSizePills();
     }
 
     function editProduct(code) {
@@ -630,6 +730,16 @@
       document.getElementById('prod-orig-price').value = p.originalPrice || '';
       document.getElementById('prod-stock').value = p.stockStatus || 'In Stock';
       document.getElementById('prod-desc').value = p.description || '';
+
+      // Load sizes for LW / MW
+      if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+        selectedSizes = [...p.sizes];
+      } else if (typeof p.sizes === 'string' && p.sizes.trim()) {
+        selectedSizes = p.sizes.split(',').map(s => s.trim()).filter(Boolean);
+      } else {
+        selectedSizes = (p.category === 'Mens Wear') ? ['38 (S)', '40 (M)', '42 (L)', '44 (XL)'] : ['S', 'M', 'L', 'XL'];
+      }
+      renderSizePills();
 
       // Load up to 3 photos
       currentUploadedImages = [];
@@ -658,6 +768,11 @@
       renderImagePreviews();
       document.getElementById('prod-code').value = generateNextProductCode();
       checkCustomDescriptionPriority();
+
+      const cat = document.getElementById('prod-category').value;
+      selectedSizes = (cat === 'Mens Wear') ? ['38 (S)', '40 (M)', '42 (L)', '44 (XL)'] : ['S', 'M', 'L', 'XL'];
+      renderSizePills();
+
       const statusText = document.getElementById('ai-status-text');
       if (statusText) statusText.innerText = 'Drop a creation photo to auto-generate title, category & luxury description';
     }
@@ -668,6 +783,14 @@
       saveBtn.disabled = true;
       saveBtn.innerText = 'Saving to products.xlsx...';
 
+      // Ensure mandatory No Return Policy note in description
+      let descVal = document.getElementById('prod-desc').value.trim();
+      if (!descVal) {
+        descVal = 'Handcrafted designer creation by Naomika Design Studio.\n\nNote: No Return Policy.';
+      } else if (!/no\s*return\s*policy/i.test(descVal)) {
+        descVal = descVal + '\n\nNote: No Return Policy.';
+      }
+
       const payload = {
         code: document.getElementById('prod-code').value.trim().toUpperCase(),
         name: document.getElementById('prod-name').value.trim(),
@@ -675,8 +798,9 @@
         badge: document.getElementById('prod-badge').value.trim() || 'Fresh Arrivals',
         price: parseFloat(document.getElementById('prod-price').value) || 0,
         originalPrice: parseFloat(document.getElementById('prod-orig-price').value) || 0,
+        sizes: selectedSizes.length > 0 ? selectedSizes : ['Custom Fit'],
         stockStatus: document.getElementById('prod-stock').value,
-        description: document.getElementById('prod-desc').value.trim(),
+        description: descVal,
         images: currentUploadedImages.length > 0 ? currentUploadedImages : ['images/1.jpeg'],
         image: currentUploadedImages[0] || 'images/1.jpeg',
         image2: currentUploadedImages[1] || currentUploadedImages[0] || 'images/1.jpeg',

@@ -258,9 +258,38 @@ function openQuickView(code) {
   document.getElementById('qv-sub').innerText = p.category;
   document.getElementById('qv-price').innerText = p.priceDisplay;
   document.getElementById('qv-orig-price').innerText = p.originalPriceDisplay || '';
-  document.getElementById('qv-desc').innerText = p.description || 'Handcrafted designer creation tailored with authentic artisanal expertise in Trivandrum, Kerala.';
+  
+  let descText = (p.description || 'Handcrafted designer creation tailored with authentic artisanal expertise in Trivandrum, Kerala.').trim();
+  if (!/no\s*return\s*policy/i.test(descText)) {
+    descText = descText + '\n\nNote: No Return Policy.';
+  }
+  document.getElementById('qv-desc').innerText = descText;
   document.getElementById('qv-img').src = p.image;
   document.getElementById('qv-stock').innerText = p.stockStatus || 'In Stock';
+
+  // Dynamic Size Selection based on Product configuration
+  const sizeSelect = document.getElementById('qv-size-select');
+  if (sizeSelect) {
+    sizeSelect.innerHTML = '';
+    let productSizes = [];
+    if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+      productSizes = p.sizes;
+    } else if (typeof p.sizes === 'string' && p.sizes.trim()) {
+      productSizes = p.sizes.split(',').map(s => s.trim()).filter(Boolean);
+    } else {
+      if (p.category === 'Mens Wear') productSizes = ['38 (S)', '40 (M)', '42 (L)', '44 (XL)', 'Custom Fit'];
+      else if (p.category === 'Customization') productSizes = ['Custom Studio Measurements'];
+      else productSizes = ['S (Small)', 'M (Medium)', 'L (Large)', 'XL (Extra Large)', 'Free Size', 'Custom Fit'];
+    }
+
+    productSizes.forEach((sz, idx) => {
+      const opt = document.createElement('option');
+      opt.value = sz;
+      opt.innerText = sz;
+      if (idx === 0 || sz.includes('M') || sz.includes('Medium')) opt.selected = true;
+      sizeSelect.appendChild(opt);
+    });
+  }
 
   // Support 3 Photos in Details Modal
   const galleryThumbs = document.getElementById('qv-gallery-thumbs');

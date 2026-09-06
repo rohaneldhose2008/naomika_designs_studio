@@ -110,6 +110,7 @@ window.STUDIO_PRODUCTS = ${JSON.stringify(products, null, 2)};
         'Category': p.category,
         'Price': p.price,
         'Original Price': p.originalPrice || 0,
+        'Sizes': Array.isArray(p.sizes) ? p.sizes.join(', ') : (p.sizes || ''),
         'Image 1': (imgs[0] || p.image || '').replace(/^images\//, ''),
         'Image 2': (imgs[1] || p.image2 || '').replace(/^images\//, ''),
         'Image 3': (imgs[2] || p.image3 || '').replace(/^images\//, ''),
@@ -192,7 +193,7 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
 1. "title": 3 to 6 elegant boutique words capturing the silhouette, fabric, or craftsmanship (e.g. "Ivory Kasavu Embroidered Anarkali", "Royal Emerald Raw Silk Kurta Set", "Pastel Hand-Embellished Organza Saree").
 2. "category": Must be strictly one of these three exact values: "Ladies Wear", "Mens Wear", or "Customization". (Categorize women's sarees/anarkalis/gowns as "Ladies Wear", men's jubbas/kurtas/mundu as "Mens Wear", bespoke patterns/fabric cuts as "Customization").
 3. "badge": A luxury boutique badge (e.g. "Fresh Arrivals", "Handcrafted Couture", "Bespoke Creation", "Festive Edit", "Bridal Heritage").
-4. "description": 2 to 3 sentences of poetic, captivating boutique copy detailing the fabric, silhouette, embroidery/zari work, craftsmanship, and suitable festive or wedding occasions.`;
+4. "description": 2 to 3 sentences of poetic, captivating boutique copy detailing the fabric, silhouette, embroidery/zari work, craftsmanship, and suitable festive or wedding occasions. At the end of the description, you MUST conclude with: "Note: No Return Policy."`;
 
     const payload = {
       contents: [
@@ -255,13 +256,18 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
       else category = 'Ladies Wear';
     }
 
+    let finalDesc = (resultJson.description || 'Exclusive designer creation handcrafted with pure artisanal finesse by Naomika Design Studio.').trim();
+    if (!/no\s*return\s*policy/i.test(finalDesc)) {
+      finalDesc = finalDesc + '\n\nNote: No Return Policy.';
+    }
+
     res.json({
       success: true,
       data: {
         title: resultJson.title || 'Handcrafted Boutique Creation',
         category: category,
         badge: resultJson.badge || 'Fresh Arrivals',
-        description: resultJson.description || 'Exclusive designer creation handcrafted with pure artisanal finesse by Naomika Design Studio.'
+        description: finalDesc
       }
     });
   } catch (err) {
@@ -284,6 +290,27 @@ app.post('/api/products', (req, res) => {
   const price = parseFloat(item.price) || 0;
   const origPrice = parseFloat(item.originalPrice) || 0;
 
+  // Handle Sizes (especially for LW and MW)
+  let sizes = [];
+  if (Array.isArray(item.sizes)) {
+    sizes = item.sizes.filter(Boolean);
+  } else if (typeof item.sizes === 'string' && item.sizes.trim()) {
+    sizes = item.sizes.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  if (sizes.length === 0) {
+    if (item.category === 'Ladies Wear') sizes = ['S', 'M', 'L', 'XL'];
+    else if (item.category === 'Mens Wear') sizes = ['38 (S)', '40 (M)', '42 (L)', '44 (XL)'];
+    else sizes = ['Custom Fit'];
+  }
+
+  // Ensure "Note: No Return Policy." is present in all product descriptions
+  let description = (item.description || '').trim();
+  if (!description) {
+    description = 'Handcrafted designer creation by Naomika Design Studio.\n\nNote: No Return Policy.';
+  } else if (!/no\s*return\s*policy/i.test(description)) {
+    description = description + '\n\nNote: No Return Policy.';
+  }
+
   // Handle 3 Photos
   let images = [];
   if (Array.isArray(item.images) && item.images.length > 0) {
@@ -305,6 +332,7 @@ app.post('/api/products', (req, res) => {
     priceDisplay: price > 0 ? `₹${price.toLocaleString('en-IN')}` : 'Bespoke / On Request',
     originalPrice: origPrice,
     originalPriceDisplay: origPrice > 0 ? `₹${origPrice.toLocaleString('en-IN')}` : '',
+    sizes: sizes,
     image: images[0],
     image2: images[1] || images[0],
     image3: images[2] || images[0],
@@ -312,7 +340,7 @@ app.post('/api/products', (req, res) => {
     stockStatus: item.stockStatus || 'In Stock',
     badge: item.badge || 'Fresh Arrivals',
     tagline: item.badge || 'Fresh Arrivals',
-    description: item.description || 'Handcrafted designer creation by Naomika Design Studio.',
+    description: description,
     featured: Boolean(item.featured)
   };
 
