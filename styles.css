@@ -605,21 +605,6 @@ select#catalog-sort-select:focus {
   text-align: center;
 }
 
-.banner-jewellery-hanging {
-  position: relative;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 24px;
-  background: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(250, 248, 245, 0.45)),
-    url('images/kerala_bridal_jewellery.jpg') center/cover no-repeat;
-  color: var(--text-charcoal);
-  border-bottom: 1px solid var(--border-gold);
-  text-align: center;
-}
-
 /* ========================================================
    HIGH-END LUXURY SEARCH & SORT CONTROLS
    ======================================================== */

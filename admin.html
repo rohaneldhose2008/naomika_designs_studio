@@ -100,36 +100,19 @@
             <select id="prod-category" onchange="handleCategoryChange()" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
               <option value="Ladies Wear">Ladies Wear</option>
               <option value="Mens Wear">Mens Wear</option>
-              <option value="Jewellery">Jewellery</option>
               <option value="Customization">Customization</option>
             </select>
           </div>
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Product Code *</label>
-            <input type="text" id="prod-code" required placeholder="NDS-LW-130" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none uppercase font-mono"/>
+            <input type="text" id="prod-code" required placeholder="P201" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none uppercase font-mono"/>
           </div>
         </div>
 
-        <!-- Subcategory with Datalist Suggestions & Badge -->
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Subcategory *</label>
-            <input type="text" id="prod-subcategory" list="subcategory-suggestions" required placeholder="Select or type..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
-            <datalist id="subcategory-suggestions">
-              <option value="Kasavu Sarees"/>
-              <option value="Bridal Lehengas"/>
-              <option value="Anarkalis"/>
-              <option value="Couture Gowns"/>
-              <option value="Co-Ord Sets"/>
-              <option value="Festive Sets"/>
-              <option value="Salwar Suits"/>
-              <option value="Kurtis"/>
-            </datalist>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Badge Tag</label>
-            <input type="text" id="prod-badge" value="Fresh Arrivals" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
-          </div>
+        <!-- Badge Tag -->
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Badge Tag</label>
+          <input type="text" id="prod-badge" value="Fresh Arrivals" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
         </div>
 
         <!-- Price & Original Price -->
@@ -212,7 +195,6 @@
               <option value="all">All</option>
               <option value="ladies wear">Ladies</option>
               <option value="mens wear">Mens</option>
-              <option value="jewellery">Jewellery</option>
               <option value="customization">Made-to-Order</option>
             </select>
           </div>
@@ -279,6 +261,10 @@
       document.getElementById('stat-mens').innerText = mens;
       document.getElementById('stat-custom').innerText = custom;
 
+      if (!isEditingMode) {
+        document.getElementById('prod-code').value = generateNextProductCode();
+      }
+
       renderTable(productsList);
     }
 
@@ -332,8 +318,7 @@
         const matchCat = (cat === 'all') || (p.category.toLowerCase() === cat);
         const matchQ = (q === '') ||
           p.code.toLowerCase().includes(q) ||
-          p.name.toLowerCase().includes(q) ||
-          (p.subcategory || '').toLowerCase().includes(q);
+          p.name.toLowerCase().includes(q);
         return matchCat && matchQ;
       });
 
@@ -487,71 +472,26 @@
       }
     }
 
-    function handleCategoryChange() {
-      const cat = document.getElementById('prod-category').value;
-      const prefix = cat === 'Ladies Wear' ? 'NDS-LW' : (cat === 'Mens Wear' ? 'NDS-MW' : (cat === 'Jewellery' ? 'NDS-JW' : 'NDS-CU'));
-
-      // Update subcategories datalist
-      const dl = document.getElementById('subcategory-suggestions');
-      if (dl) {
-        if (cat === 'Ladies Wear') {
-          dl.innerHTML = `
-            <option value="Kasavu Sarees"/>
-            <option value="Bridal Lehengas"/>
-            <option value="Anarkalis"/>
-            <option value="Couture Gowns"/>
-            <option value="Co-Ord Sets"/>
-            <option value="Festive Sets"/>
-            <option value="Salwar Suits"/>
-            <option value="Kurtis"/>
-          `;
-        } else if (cat === 'Mens Wear') {
-          dl.innerHTML = `
-            <option value="Kasavu Mundu Sets"/>
-            <option value="Raw Silk Kurtas"/>
-            <option value="Royal Groom Sherwanis"/>
-            <option value="Tuxedos & Suits"/>
-            <option value="Nehru Jackets"/>
-            <option value="Jubba Sets"/>
-          `;
-        } else if (cat === 'Jewellery') {
-          dl.innerHTML = `
-            <option value="Antique Temple Jewellery"/>
-            <option value="Bridal Chokers"/>
-            <option value="Palakka Mala & Sets"/>
-            <option value="Kasavu Coin Necklaces"/>
-            <option value="Temple Kadas & Bangles"/>
-            <option value="South Sea Pearl Sets"/>
-            <option value="Traditional Jhumkas"/>
-          `;
-        } else {
-          dl.innerHTML = `
-            <option value="Bespoke Bridal Couture"/>
-            <option value="Custom Groom Ensemble"/>
-            <option value="Handloom Kasavu Weaving"/>
-            <option value="Made-to-Order Gown"/>
-            <option value="Hand-Embroidered Blouse"/>
-          `;
-        }
-      }
-
-      checkCustomDescriptionPriority();
-
-      if (isEditingMode) return;
-
-      // Auto-generate code starting strictly from 1000
-      let maxNum = 1000;
+    function generateNextProductCode() {
+      let maxNum = 200;
       productsList.forEach(p => {
-        if (p.code && p.code.startsWith(prefix)) {
-          const m = p.code.match(/-(\d+)$/);
+        if (p.code) {
+          const m = p.code.match(/^P-?(\d+)$/i);
           if (m) {
             const num = parseInt(m[1], 10);
             if (!isNaN(num) && num > maxNum) maxNum = num;
           }
         }
       });
+      return `P${maxNum + 1}`;
+    }
 
-      document.getElementById('prod-code').value = `${prefix}-${maxNum + 1}`;
+    function handleCategoryChange() {
+      checkCustomDescriptionPriority();
+
+      if (isEditingMode) return;
+
+      document.getElementById('prod-code').value = generateNextProductCode();
     }
 
     function editProduct(code) {
@@ -567,7 +507,6 @@
       document.getElementById('prod-code').readOnly = true;
       document.getElementById('prod-name').value = p.name;
       document.getElementById('prod-category').value = p.category;
-      document.getElementById('prod-subcategory').value = p.subcategory || '';
       document.getElementById('prod-badge').value = p.badge || 'Fresh Arrivals';
       document.getElementById('prod-price').value = p.price || 0;
       document.getElementById('prod-orig-price').value = p.originalPrice || '';
@@ -599,7 +538,8 @@
       document.getElementById('save-btn').innerText = 'Save Product to Excel & Store';
       currentUploadedImages = [];
       renderImagePreviews();
-      handleCategoryChange();
+      document.getElementById('prod-code').value = generateNextProductCode();
+      checkCustomDescriptionPriority();
     }
 
     function handleFormSubmit(event) {
@@ -612,7 +552,6 @@
         code: document.getElementById('prod-code').value.trim().toUpperCase(),
         name: document.getElementById('prod-name').value.trim(),
         category: document.getElementById('prod-category').value,
-        subcategory: document.getElementById('prod-subcategory').value.trim(),
         badge: document.getElementById('prod-badge').value.trim() || 'Fresh Arrivals',
         price: parseFloat(document.getElementById('prod-price').value) || 0,
         originalPrice: parseFloat(document.getElementById('prod-orig-price').value) || 0,

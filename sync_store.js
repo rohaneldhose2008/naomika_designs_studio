@@ -52,30 +52,11 @@ function resolveImagePath(rawName) {
     return `images/${cleanName}`;
 }
 
-const catCounters = {
-    'ladies wear': 100,
-    'mens wear': 200,
-    'customization': 300,
-    'jewellery': 400,
-    'jewelry': 400,
-    'general': 500
-};
+let globalProductCodeCounter = 200;
 
-const catPrefixes = {
-    'ladies wear': 'NDS-LW',
-    'mens wear': 'NDS-MW',
-    'customization': 'NDS-CU',
-    'jewellery': 'NDS-JW',
-    'jewelry': 'NDS-JW',
-    'general': 'NDS-PR'
-};
-
-function generateProductCode(category) {
-    const key = (category || 'general').toLowerCase().trim();
-    const prefix = catPrefixes[key] || 'NDS-PR';
-    if (!catCounters[key]) catCounters[key] = 100;
-    catCounters[key]++;
-    return `${prefix}-${catCounters[key]}`;
+function generateProductCode() {
+    globalProductCodeCounter++;
+    return `P${globalProductCodeCounter}`;
 }
 
 function syncStore() {
@@ -99,16 +80,22 @@ function syncStore() {
     }
 
     const products = [];
+    globalProductCodeCounter = 200;
 
     rows.forEach((row, idx) => {
         const category = String(row['Category'] || 'Ladies Wear').trim();
         let code = row['Product Code'] ? String(row['Product Code']).trim() : '';
         if (!code) {
-            code = generateProductCode(category);
+            code = generateProductCode();
+        } else {
+            const numMatch = code.match(/^P-?(\d+)$/i);
+            if (numMatch) {
+                const n = parseInt(numMatch[1], 10);
+                if (n > globalProductCodeCounter) globalProductCodeCounter = n;
+            }
         }
 
         const name = String(row['Product Name'] || `Studio Creation ${idx + 1}`).trim();
-        const subcategory = String(row['Subcategory'] || 'Designer Collection').trim();
         const rawPrice = row['Price'] !== undefined ? row['Price'] : 0;
         const priceNum = typeof rawPrice === 'number' ? rawPrice : parseFloat(String(rawPrice).replace(/[^\d.]/g, '')) || 0;
         const origPrice = row['Original Price'] ? (typeof row['Original Price'] === 'number' ? row['Original Price'] : parseFloat(String(row['Original Price']).replace(/[^\d.]/g, '')) || 0) : 0;
@@ -131,7 +118,6 @@ function syncStore() {
             code,
             name,
             category,
-            subcategory,
             price: priceNum,
             priceDisplay: priceNum > 0 ? `₹${priceNum.toLocaleString('en-IN')}` : 'Bespoke / On Request',
             originalPrice: origPrice,

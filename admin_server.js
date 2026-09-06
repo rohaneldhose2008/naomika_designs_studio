@@ -84,7 +84,6 @@ window.STUDIO_PRODUCTS = ${JSON.stringify(products, null, 2)};
         'Product Code': p.code,
         'Product Name': p.name,
         'Category': p.category,
-        'Subcategory': p.subcategory || '',
         'Price': p.price,
         'Original Price': p.originalPrice || 0,
         'Image 1': (imgs[0] || p.image || '').replace(/^images\//, ''),

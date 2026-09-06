@@ -67,8 +67,6 @@ function processAndRender() {
     currentCategory = 'ladies wear';
   } else if (path.includes('mens-wear')) {
     currentCategory = 'mens wear';
-  } else if (path.includes('jewellery') || path.includes('jewelry')) {
-    currentCategory = 'jewellery';
   } else if (path.includes('customization')) {
     currentCategory = 'customization';
   } else {
@@ -82,9 +80,7 @@ function applyFilters() {
   filteredProducts = allProducts.filter(item => {
     if (currentCategory !== 'all') {
       const itemCat = (item.category || '').toLowerCase().trim();
-      if (currentCategory === 'jewellery' || currentCategory === 'jewelry') {
-        if (itemCat !== 'jewellery' && itemCat !== 'jewelry') return false;
-      } else if (itemCat !== currentCategory.toLowerCase()) {
+      if (itemCat !== currentCategory.toLowerCase()) {
         return false;
       }
     }
@@ -124,7 +120,7 @@ function renderNextBatch() {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 70px 20px; background: #faf9f6; border: 1px dashed var(--border-gold); border-radius: 14px; margin: 10px 0;">
         <p style="font-family: var(--font-editorial); font-size: 1.6rem; color: var(--text-charcoal); margin-bottom: 8px;">No Creations Found in ${displayCatName}</p>
-        <p style="font-size: 0.85rem; color: var(--text-dim); max-width: 520px; margin: 0 auto 20px; line-height: 1.6;">Our artisans in Trivandrum are photographing and tailoring exclusive additions. Contact our boutique concierge directly on WhatsApp for bespoke styling.</p>
+        <p style="font-size: 0.85rem; color: var(--text-dim); max-width: 520px; margin: 0 auto 20px; line-height: 1.6;">Our artisans in Trivandrum are preparing exclusive additions. Contact our boutique concierge directly on WhatsApp for bespoke styling.</p>
         <a href="https://wa.me/${CONFIG.whatsappNumber}?text=Hello%20Naomika%20Design%20Studio,%20I%20am%20enquiring%20about%20your%20${encodeURIComponent(displayCatName)}%20creations" target="_blank" class="btn-classy" style="font-size: 0.72rem; padding: 10px 22px;">
           Enquire on WhatsApp &rarr;
         </a>
@@ -149,7 +145,7 @@ function renderNextBatch() {
       </div>
       <div class="editorial-card-info">
         <div class="editorial-meta-sub">
-          <span>${product.subcategory || product.category}</span>
+          <span>${product.category}</span>
           <span style="float: right; font-family: monospace; color: var(--text-muted);">${product.code}</span>
         </div>
         <h3 class="editorial-card-title">${product.name}</h3>
@@ -207,16 +203,13 @@ function setupFilterEvents() {
     filteredProducts = allProducts.filter(item => {
       if (currentCategory !== 'all') {
         const itemCat = (item.category || '').toLowerCase().trim();
-        if (currentCategory === 'jewellery' || currentCategory === 'jewelry') {
-          if (itemCat !== 'jewellery' && itemCat !== 'jewelry') return false;
-        } else if (itemCat !== currentCategory.toLowerCase()) {
+        if (itemCat !== currentCategory.toLowerCase()) {
           return false;
         }
       }
       if (!q) return true;
       return item.name.toLowerCase().includes(q) ||
-             item.code.toLowerCase().includes(q) ||
-             (item.subcategory || '').toLowerCase().includes(q);
+             item.code.toLowerCase().includes(q);
     });
 
     if (currentSort === 'price-asc') {
@@ -262,7 +255,7 @@ function openQuickView(code) {
 
   document.getElementById('qv-title').innerText = p.name;
   document.getElementById('qv-code').innerText = p.code;
-  document.getElementById('qv-sub').innerText = `${p.category} • ${p.subcategory || 'Signature Couture'}`;
+  document.getElementById('qv-sub').innerText = p.category;
   document.getElementById('qv-price').innerText = p.priceDisplay;
   document.getElementById('qv-orig-price').innerText = p.originalPriceDisplay || '';
   document.getElementById('qv-desc').innerText = p.description || 'Handcrafted designer creation tailored with authentic artisanal expertise in Trivandrum, Kerala.';
