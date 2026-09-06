@@ -31,8 +31,12 @@
 
     <!-- Collaboration & Publish Controls -->
     <div class="flex items-center gap-2.5 flex-wrap">
-      <button onclick="pullLatestUpdates()" id="pull-btn" class="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5" title="Pulls all changes from GitHub so team members see identical updates">
-        <span>📥</span> Pull Latest Updates
+      <button type="button" onclick="scrollToAddProduct()" class="px-3 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5" title="Jump to Add New Product form">
+        <span>➕</span> Add Product
+      </button>
+
+      <button onclick="pullLatestUpdates()" id="pull-btn" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5" title="Pulls all changes from GitHub so team members see identical updates">
+        <span>📥</span> Pull Updates
       </button>
 
       <button onclick="publishOnline()" id="publish-btn" class="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold uppercase tracking-wider shadow-sm transition-all flex items-center gap-1.5" title="Publishes catalog changes online">
@@ -45,11 +49,11 @@
     </div>
   </header>
 
-  <!-- Main 2-Column Grid Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+  <!-- Responsive Grid Container: Stacks cleanly without sticky collisions -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col xl:grid xl:grid-cols-12 gap-8">
     
-    <!-- LEFT COLUMN: Add / Edit Product Form (5 Cols) -->
-    <section class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit sticky top-24">
+    <!-- Add / Edit Product Form (Stacks DOWN below inventory on mobile/adjusted screens) -->
+    <section id="add-product-section" class="order-2 xl:order-1 xl:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
       <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
         <div>
           <h2 id="form-title" class="font-serif text-xl font-bold text-slate-900">Add New Product</h2>
@@ -204,8 +208,8 @@
       </form>
     </section>
 
-    <!-- RIGHT COLUMN: Metric Stats & Live Inventory Table (7 Cols) -->
-    <section class="lg:col-span-7 space-y-6">
+    <!-- Live Inventory Table & Metric Stats (Order 1 on mobile/adjusted screens) -->
+    <section id="inventory-section" class="order-1 xl:order-2 xl:col-span-7 space-y-6">
       
       <!-- Metric Stats Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -816,20 +820,34 @@
       .then(res => res.json())
       .then(result => {
         saveBtn.disabled = false;
-        saveBtn.innerText = isEditingMode ? 'Update Product in Excel' : 'Save Product to Excel & Store';
         if (result.success) {
-          alert(`Success: ${payload.code} saved with ${payload.images.length} photos in products.xlsx!`);
+          // No popup alert on success as requested! Only alert if failed.
           resetForm();
           loadAdminData();
+          saveBtn.innerText = '✓ Saved in Excel & Store!';
+          saveBtn.classList.remove('bg-amber-600', 'hover:bg-amber-700');
+          saveBtn.classList.add('bg-emerald-600');
+          setTimeout(() => {
+            saveBtn.innerText = isEditingMode ? 'Update Product in Excel' : 'Save Product to Excel & Store';
+            saveBtn.classList.remove('bg-emerald-600');
+            saveBtn.classList.add('bg-amber-600', 'hover:bg-amber-700');
+          }, 2000);
         } else {
-          alert('Error: ' + result.error);
+          saveBtn.innerText = isEditingMode ? 'Update Product in Excel' : 'Save Product to Excel & Store';
+          alert('Error saving product: ' + result.error);
         }
       })
       .catch(err => {
         saveBtn.disabled = false;
-        saveBtn.innerText = 'Save Product to Excel & Store';
-        alert('Server error: ' + err.message);
+        saveBtn.innerText = isEditingMode ? 'Update Product in Excel' : 'Save Product to Excel & Store';
+        alert('Server connection error: ' + err.message);
       });
+    }
+
+    function scrollToAddProduct() {
+      resetForm();
+      const section = document.getElementById('add-product-section');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
     }
 
     function deleteProduct(code) {
