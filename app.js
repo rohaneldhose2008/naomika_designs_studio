@@ -67,6 +67,8 @@ function processAndRender() {
     currentCategory = 'ladies wear';
   } else if (path.includes('mens-wear')) {
     currentCategory = 'mens wear';
+  } else if (path.includes('jewellery') || path.includes('jewelry')) {
+    currentCategory = 'jewellery';
   } else if (path.includes('customization')) {
     currentCategory = 'customization';
   } else {
@@ -79,7 +81,12 @@ function processAndRender() {
 function applyFilters() {
   filteredProducts = allProducts.filter(item => {
     if (currentCategory !== 'all') {
-      if (item.category.toLowerCase() !== currentCategory.toLowerCase()) return false;
+      const itemCat = (item.category || '').toLowerCase().trim();
+      if (currentCategory === 'jewellery' || currentCategory === 'jewelry') {
+        if (itemCat !== 'jewellery' && itemCat !== 'jewelry') return false;
+      } else if (itemCat !== currentCategory.toLowerCase()) {
+        return false;
+      }
     }
     return true;
   });
@@ -89,6 +96,7 @@ function applyFilters() {
   } else if (currentSort === 'price-desc') {
     filteredProducts.sort((a, b) => b.price - a.price);
   } else {
+    // Default: Newest First (latest uploaded creations at the top)
     filteredProducts.sort((a, b) => b.id - a.id);
   }
 
@@ -112,19 +120,25 @@ function renderNextBatch() {
   displayedCount += nextBatch.length;
 
   if (nextBatch.length === 0 && displayedCount === 0) {
+    const displayCatName = currentCategory === 'all' ? 'this collection' : currentCategory;
     grid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-dim);">
-        <p style="font-family: var(--font-editorial); font-size: 1.6rem; margin-bottom: 8px;">No Creations Found</p>
-        <p style="font-size: 0.85rem;">Please check back later for our new collection releases.</p>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 70px 20px; background: #faf9f6; border: 1px dashed var(--border-gold); border-radius: 14px; margin: 10px 0;">
+        <p style="font-family: var(--font-editorial); font-size: 1.6rem; color: var(--text-charcoal); margin-bottom: 8px;">No Creations Found in ${displayCatName}</p>
+        <p style="font-size: 0.85rem; color: var(--text-dim); max-width: 520px; margin: 0 auto 20px; line-height: 1.6;">Our artisans in Trivandrum are photographing and tailoring exclusive additions. Contact our boutique concierge directly on WhatsApp for bespoke styling.</p>
+        <a href="https://wa.me/${CONFIG.whatsappNumber}?text=Hello%20Naomika%20Design%20Studio,%20I%20am%20enquiring%20about%20your%20${encodeURIComponent(displayCatName)}%20creations" target="_blank" class="btn-classy" style="font-size: 0.72rem; padding: 10px 22px;">
+          Enquire on WhatsApp &rarr;
+        </a>
       </div>
     `;
+    const countEl = document.getElementById('products-count-label');
+    if (countEl) countEl.innerText = `0 Creations Available`;
     return;
   }
 
   nextBatch.forEach(product => {
     const card = document.createElement('div');
     card.className = 'editorial-card';
-    // Entire card is clickable anywhere to pop up full product details
+    // Entire card is clickable anywhere to pop up full product card details
     card.setAttribute('onclick', `openQuickView('${product.code}')`);
 
     // Notice: NO description on product cards; only a single "Add to Cart" button (no emojis)
@@ -157,7 +171,8 @@ function renderNextBatch() {
 
   const countEl = document.getElementById('products-count-label');
   if (countEl) {
-    countEl.innerText = `Displaying ${displayedCount} of ${filteredProducts.length} Creations`;
+    const catLabel = currentCategory === 'all' ? 'All Gallery' : (currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1));
+    countEl.innerText = `Showing ${displayedCount} of ${filteredProducts.length} Creations in ${catLabel}`;
   }
 }
 
@@ -170,6 +185,19 @@ function setupFilterEvents() {
     });
   }
 
+  // Setup Curated Category Filter Tabs on the homepage
+  const tabs = document.querySelectorAll('.curated-tab-btn');
+  if (tabs.length) {
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.getAttribute('data-category') || 'all';
+        applyFilters();
+      });
+    });
+  }
+
   const handleGlobalSearch = (val) => {
     const q = (val || '').toLowerCase().trim();
     document.querySelectorAll('.top-search-input').forEach(inp => {
@@ -178,13 +206,26 @@ function setupFilterEvents() {
 
     filteredProducts = allProducts.filter(item => {
       if (currentCategory !== 'all') {
-        if (item.category.toLowerCase() !== currentCategory.toLowerCase()) return false;
+        const itemCat = (item.category || '').toLowerCase().trim();
+        if (currentCategory === 'jewellery' || currentCategory === 'jewelry') {
+          if (itemCat !== 'jewellery' && itemCat !== 'jewelry') return false;
+        } else if (itemCat !== currentCategory.toLowerCase()) {
+          return false;
+        }
       }
       if (!q) return true;
       return item.name.toLowerCase().includes(q) ||
              item.code.toLowerCase().includes(q) ||
              (item.subcategory || '').toLowerCase().includes(q);
     });
+
+    if (currentSort === 'price-asc') {
+      filteredProducts.sort((a, b) => a.price - b.price);
+    } else if (currentSort === 'price-desc') {
+      filteredProducts.sort((a, b) => b.price - a.price);
+    } else {
+      filteredProducts.sort((a, b) => b.id - a.id);
+    }
 
     if (currentCategory === 'all') filteredProducts = filteredProducts.slice(0, 50);
     displayedCount = 0;

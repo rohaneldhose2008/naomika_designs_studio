@@ -56,13 +56,17 @@ const catCounters = {
     'ladies wear': 100,
     'mens wear': 200,
     'customization': 300,
-    'general': 400
+    'jewellery': 400,
+    'jewelry': 400,
+    'general': 500
 };
 
 const catPrefixes = {
     'ladies wear': 'NDS-LW',
     'mens wear': 'NDS-MW',
     'customization': 'NDS-CU',
+    'jewellery': 'NDS-JW',
+    'jewelry': 'NDS-JW',
     'general': 'NDS-PR'
 };
 

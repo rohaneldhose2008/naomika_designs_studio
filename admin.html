@@ -100,6 +100,7 @@
             <select id="prod-category" onchange="handleCategoryChange()" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
               <option value="Ladies Wear">Ladies Wear</option>
               <option value="Mens Wear">Mens Wear</option>
+              <option value="Jewellery">Jewellery</option>
               <option value="Customization">Customization</option>
             </select>
           </div>
@@ -211,6 +212,7 @@
               <option value="all">All</option>
               <option value="ladies wear">Ladies</option>
               <option value="mens wear">Mens</option>
+              <option value="jewellery">Jewellery</option>
               <option value="customization">Made-to-Order</option>
             </select>
           </div>
@@ -487,7 +489,7 @@
 
     function handleCategoryChange() {
       const cat = document.getElementById('prod-category').value;
-      const prefix = cat === 'Ladies Wear' ? 'NDS-LW' : (cat === 'Mens Wear' ? 'NDS-MW' : 'NDS-CU');
+      const prefix = cat === 'Ladies Wear' ? 'NDS-LW' : (cat === 'Mens Wear' ? 'NDS-MW' : (cat === 'Jewellery' ? 'NDS-JW' : 'NDS-CU'));
 
       // Update subcategories datalist
       const dl = document.getElementById('subcategory-suggestions');
@@ -511,6 +513,16 @@
             <option value="Tuxedos & Suits"/>
             <option value="Nehru Jackets"/>
             <option value="Jubba Sets"/>
+          `;
+        } else if (cat === 'Jewellery') {
+          dl.innerHTML = `
+            <option value="Antique Temple Jewellery"/>
+            <option value="Bridal Chokers"/>
+            <option value="Palakka Mala & Sets"/>
+            <option value="Kasavu Coin Necklaces"/>
+            <option value="Temple Kadas & Bangles"/>
+            <option value="South Sea Pearl Sets"/>
+            <option value="Traditional Jhumkas"/>
           `;
         } else {
           dl.innerHTML = `
