@@ -215,7 +215,13 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
       }
     };
 
-    const modelsToTry = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+    const modelsToTry = [
+      'gemini-3.7-flash',
+      'gemini-3.1-flash-lite',
+      'gemini-3.5-flash',
+      'gemini-flash-latest',
+      'gemini-3.6-flash'
+    ];
     let lastError = null;
     let resultJson = null;
 
@@ -229,7 +235,10 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
 
         const data = await response.json();
         if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
-          const rawText = data.candidates[0].content.parts[0].text;
+          let rawText = data.candidates[0].content.parts[0].text.trim();
+          if (rawText.startsWith('```')) {
+            rawText = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+          }
           resultJson = JSON.parse(rawText);
           break;
         } else if (data.error) {
