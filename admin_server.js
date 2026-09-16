@@ -211,16 +211,17 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
       ],
       generationConfig: {
         response_mime_type: 'application/json',
-        temperature: 0.4
+        temperature: 0.3,
+        max_output_tokens: 350
       }
     };
 
     const modelsToTry = [
-      'gemini-3.7-flash',
+      'gemini-flash-lite-latest',
+      'gemini-3.5-flash-lite',
       'gemini-3.1-flash-lite',
       'gemini-3.5-flash',
-      'gemini-flash-latest',
-      'gemini-3.6-flash'
+      'gemini-flash-latest'
     ];
     let lastError = null;
     let resultJson = null;
@@ -230,7 +231,8 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(7000)
         });
 
         const data = await response.json();
