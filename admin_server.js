@@ -188,12 +188,12 @@ app.post('/api/ai-describe', async (req, res) => {
       return res.status(400).json({ success: false, error: 'No image provided for AI analysis' });
     }
 
-    const promptText = `You are the head fashion curator and copywriter for Naomika Design Studio, an exclusive luxury designer boutique in Trivandrum, Kerala specializing in bespoke couture, bridal sarees, kasavu drapes, festive kurtas, and custom tailoring.
+    const promptText = `Fashion curator for Naomika Design Studio, luxury designer boutique in Trivandrum, Kerala.
 Analyze this product image carefully. Provide an authentic, high-end boutique catalog entry in JSON format with these exact keys:
-1. "title": 3 to 6 elegant boutique words capturing the silhouette, fabric, or craftsmanship (e.g. "Ivory Kasavu Embroidered Anarkali", "Royal Emerald Raw Silk Kurta Set", "Pastel Hand-Embellished Organza Saree").
-2. "category": Must be strictly one of these three exact values: "Ladies Wear", "Mens Wear", or "Customization". (Categorize women's sarees/anarkalis/gowns as "Ladies Wear", men's jubbas/kurtas/mundu as "Mens Wear", bespoke patterns/fabric cuts as "Customization").
-3. "badge": A luxury boutique badge (e.g. "Fresh Arrivals", "Handcrafted Couture", "Bespoke Creation", "Festive Edit", "Bridal Heritage").
-4. "description": 2 to 3 sentences of poetic, captivating boutique copy detailing the fabric, silhouette, embroidery/zari work, craftsmanship, and suitable festive or wedding occasions. At the end of the description, you MUST conclude with: "Note: No Return Policy."`;
+1. "title": 3 to 5 elegant boutique words capturing silhouette, fabric, or craftsmanship.
+2. "category": Strictly one of: "Ladies Wear", "Mens Wear", or "Customization".
+3. "badge": A luxury boutique badge (e.g. "Fresh Arrivals", "Handcrafted Couture", "Bespoke Creation", "Bridal Heritage").
+4. "description": 2 sentences describing fabric, silhouette, embroidery/zari work, craftsmanship, and occasion. At the end, you MUST conclude with: "Note: No Return Policy."`;
 
     const payload = {
       contents: [
@@ -211,17 +211,15 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
       ],
       generationConfig: {
         response_mime_type: 'application/json',
-        temperature: 0.3,
-        max_output_tokens: 350
+        temperature: 0.2,
+        max_output_tokens: 250
       }
     };
 
     const modelsToTry = [
-      'gemini-flash-lite-latest',
       'gemini-3.5-flash-lite',
-      'gemini-3.1-flash-lite',
-      'gemini-3.5-flash',
-      'gemini-flash-latest'
+      'gemini-flash-lite-latest',
+      'gemini-3.1-flash-lite'
     ];
     let lastError = null;
     let resultJson = null;
@@ -232,7 +230,7 @@ Analyze this product image carefully. Provide an authentic, high-end boutique ca
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
-          signal: AbortSignal.timeout(7000)
+          signal: AbortSignal.timeout(6000)
         });
 
         const data = await response.json();
@@ -387,46 +385,129 @@ app.delete('/api/products/:code', (req, res) => {
 
 // API: Pull Latest Updates from Git repository for co-worker collaboration
 app.all('/api/pull', (req, res) => {
-  exec('git --version', (gitCheckErr) => {
-    if (gitCheckErr) {
-      return res.json({ success: false, error: 'Git not found on this machine. Please install Git.' });
-    }
-    const gitDir = path.join(BASE_DIR, '.git');
-    if (!fs.existsSync(gitDir)) {
-      try {
-        execSync('git init', { cwd: BASE_DIR });
-      } catch (e) {}
-      return res.json({
-        success: true,
-        output: 'Git repository initialized. Add your GitHub remote URL to pull shared commits.'
+  try {
+    // 1. Ensure author identity is set
+    try {
+      execSync('git config user.name "rohaneldhose2008"', { cwd: BASE_DIR });
+      execSync('git config user.email "rohaneldhose2008@gmail.com"', { cwd: BASE_DIR });
+    } catch (e) {}
+
+    // 2. Stash uncommitted changes if any to prevent collision
+    let stashed = false;
+    try {
+      const status = execSync('git status --porcelain', { cwd: BASE_DIR, encoding: 'utf8' }).trim();
+      if (status) {
+        execSync('git stash', { cwd: BASE_DIR });
+        stashed = true;
+      }
+    } catch (e) {}
+
+    // 3. Pull latest updates from GitHub origin main
+    let pullOut = '';
+    try {
+      pullOut = execSync('git pull origin main', { cwd: BASE_DIR, encoding: 'utf8' });
+    } catch (pullErr) {
+      if (stashed) {
+        try { execSync('git stash pop', { cwd: BASE_DIR }); } catch (e) {}
+      }
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to pull from GitHub: ' + (pullErr.stderr || pullErr.message)
       });
     }
 
-    exec('git pull origin main', { cwd: BASE_DIR }, (err, stdout, stderr) => {
-      exec('node sync_store.js', { cwd: BASE_DIR });
-      if (err) {
-        return res.json({ success: false, error: stderr || err.message, output: stdout });
+    // 4. Restore stashed changes
+    if (stashed) {
+      try {
+        execSync('git stash pop', { cwd: BASE_DIR });
+      } catch (e) {
+        console.warn('Stash pop note:', e.message);
       }
-      res.json({ success: true, output: stdout || 'Latest updates pulled successfully from GitHub!' });
+    }
+
+    // 5. Resync spreadsheet and products JSON/JS
+    let syncOut = '';
+    try {
+      syncOut = execSync('node sync_store.js', { cwd: BASE_DIR, encoding: 'utf8' });
+    } catch (e) {}
+
+    res.json({
+      success: true,
+      output: (pullOut || 'Latest updates pulled successfully from GitHub!') + (syncOut ? ('\n' + syncOut) : '')
     });
-  });
+  } catch (err) {
+    console.error('Pull error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Pull error: ' + (err.stderr || err.message)
+    });
+  }
 });
 
-// API: Publish Online (Runs sync_store.js, commits, and updates store)
+// API: Publish Online (Runs sync_store.js, commits, pulls --rebase, and pushes to origin main)
 app.post('/api/publish', (req, res) => {
-  exec('node sync_store.js', { cwd: BASE_DIR }, (syncErr, syncOut) => {
-    const gitDir = path.join(BASE_DIR, '.git');
-    if (!fs.existsSync(gitDir)) {
-      try { execSync('git init', { cwd: BASE_DIR }); } catch(e){}
+  try {
+    // 1. Ensure Excel and products JSON/JS are in sync
+    let syncOut = '';
+    try {
+      syncOut = execSync('node sync_store.js', { cwd: BASE_DIR, encoding: 'utf8' });
+    } catch (e) {
+      console.warn('sync_store note:', e.message);
     }
-    exec('git add . && git commit -m "Admin Catalog Update" && git push origin main', { cwd: BASE_DIR }, (gitErr, gitOut) => {
-      res.json({
-        success: true,
-        message: 'Store published and synced successfully!',
-        output: syncOut + (gitOut ? ('\n' + gitOut) : '')
+
+    // 2. Ensure git author identity is set
+    try {
+      execSync('git config user.name "rohaneldhose2008"', { cwd: BASE_DIR });
+      execSync('git config user.email "rohaneldhose2008@gmail.com"', { cwd: BASE_DIR });
+    } catch (e) {}
+
+    // 3. Stage all new, modified, and deleted files
+    execSync('git add -A', { cwd: BASE_DIR });
+
+    // 4. Commit if there are changes staged
+    let commitOut = '';
+    try {
+      const status = execSync('git status --porcelain', { cwd: BASE_DIR, encoding: 'utf8' }).trim();
+      if (status) {
+        commitOut = execSync('git commit -m "Admin Catalog Update - Naomika Studio"', { cwd: BASE_DIR, encoding: 'utf8' });
+      } else {
+        commitOut = 'Working tree already clean, no new changes to commit.';
+      }
+    } catch (commitErr) {
+      commitOut = commitErr.stdout || commitErr.message;
+    }
+
+    // 5. Pull rebase to ensure local branch is in sync with remote before pushing
+    try {
+      execSync('git pull --rebase origin main', { cwd: BASE_DIR, encoding: 'utf8' });
+    } catch (rebaseErr) {
+      console.warn('Rebase note:', rebaseErr.message);
+    }
+
+    // 6. Push to GitHub origin main
+    let pushOut = '';
+    try {
+      pushOut = execSync('git push origin main', { cwd: BASE_DIR, encoding: 'utf8' });
+    } catch (pushErr) {
+      console.error('git push error:', pushErr);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to push to GitHub: ' + (pushErr.stderr || pushErr.message || 'Push rejected')
       });
+    }
+
+    res.json({
+      success: true,
+      message: 'Catalog published and pushed to GitHub Pages! Live site is updating now.',
+      output: [syncOut, commitOut, pushOut].filter(Boolean).join('\n')
     });
-  });
+  } catch (err) {
+    console.error('Publish error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Publish error: ' + (err.stderr || err.message)
+    });
+  }
 });
 
 // API: Stats

@@ -95,15 +95,18 @@
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="text-xl shrink-0">✨</span>
               <div class="min-w-0">
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-2">
                   <p class="font-bold text-slate-800 text-[11px] tracking-wide">Gemini AI Curator</p>
-                  <span class="px-1.5 py-0.2 bg-amber-200/60 text-amber-900 rounded text-[9px] font-semibold">Auto-Fill</span>
+                  <label class="flex items-center gap-1 text-[10px] text-slate-600 cursor-pointer select-none">
+                    <input type="checkbox" id="ai-auto-trigger" checked class="rounded text-amber-600 focus:ring-0 w-3 h-3"/>
+                    <span>Auto-fill on drop</span>
+                  </label>
                 </div>
                 <p id="ai-status-text" class="text-[10px] text-slate-500 truncate">Drop a creation photo to auto-generate title, category & luxury description</p>
               </div>
             </div>
-            <button type="button" id="ai-describe-btn" onclick="triggerAiDescribeManual()" class="shrink-0 px-3 py-1.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center gap-1.5">
-              <span>✨ Auto-Fill</span>
+            <button type="button" id="ai-describe-btn" onclick="triggerAiDescribeManual()" class="shrink-0 px-3 py-1.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center gap-1.5" title="Generate title & description in ~2 seconds">
+              <span>✨ Auto-Fill (~2s)</span>
             </button>
           </div>
         </div>
@@ -456,8 +459,10 @@
           });
           renderImagePreviews();
 
-          // Automatically trigger Gemini AI Auto-Describe when photo is dropped/selected!
-          if (wasEmpty && currentUploadedImages.length > 0) {
+          // Automatically trigger Gemini AI Auto-Describe when photo is dropped/selected if toggle is on!
+          const autoTriggerEl = document.getElementById('ai-auto-trigger');
+          const shouldAutoRun = !autoTriggerEl || autoTriggerEl.checked;
+          if (wasEmpty && currentUploadedImages.length > 0 && shouldAutoRun) {
             runAiDescribe(currentUploadedImages[0]);
           }
         } else {
@@ -524,7 +529,7 @@
     // Gemini Vision AI Auto-Fill & Describe Engine
     let isAiGenerating = false;
 
-    // Fast client-side image downscaler to reduce AI latency from 40s to ~2s
+    // Fast client-side image downscaler to reduce AI latency to ~2s
     function getCompressedBase64(src) {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
@@ -532,7 +537,7 @@
         img.crossOrigin = 'anonymous';
         img.onload = () => {
           try {
-            const maxDim = 800;
+            const maxDim = 500;
             let width = img.naturalWidth || img.width;
             let height = img.naturalHeight || img.height;
             if (width > maxDim || height > maxDim) {
@@ -549,7 +554,7 @@
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
             const parts = dataUrl.split(',');
             resolve(parts[1] || null);
           } catch (err) {
@@ -650,7 +655,7 @@
         isAiGenerating = false;
         if (aiBtn) {
           aiBtn.disabled = false;
-          aiBtn.innerHTML = `<span>✨ Auto-Fill</span>`;
+          aiBtn.innerHTML = `<span>✨ Auto-Fill (~2s)</span>`;
           aiBtn.classList.remove('opacity-75');
         }
       }
@@ -922,6 +927,15 @@
       fetch('/api/pull')
         .then(res => res.json())
         .then(data => {
+          if (!data.success) {
+            btn.innerHTML = '<span>❌</span> Pull Failed';
+            alert('Pull Failed:\n' + (data.error || 'Unknown error while pulling from GitHub'));
+            setTimeout(() => {
+              btn.innerHTML = '<span>📥</span> Pull Latest Updates';
+              btn.disabled = false;
+            }, 2000);
+            return;
+          }
           btn.innerHTML = '<span>✅</span> Pulled!';
           alert(data.output || 'Latest changes pulled successfully from GitHub!');
           setTimeout(() => {
@@ -946,8 +960,17 @@
       fetch('/api/publish', { method: 'POST' })
         .then(res => res.json())
         .then(data => {
+          if (!data.success) {
+            btn.innerHTML = '<span>❌</span> Publish Failed';
+            alert('Publish Failed:\n' + (data.error || 'Unknown error while pushing to GitHub'));
+            setTimeout(() => {
+              btn.innerHTML = '<span>🚀</span> Publish Online';
+              btn.disabled = false;
+            }, 2000);
+            return;
+          }
           btn.innerHTML = '<span>✅</span> Published!';
-          alert('Store published online! Excel and store catalog are synced.');
+          alert('Store published online!\n\nAll changes pushed to GitHub. The live website is updating now.');
           setTimeout(() => {
             btn.innerHTML = '<span>🚀</span> Publish Online';
             btn.disabled = false;
